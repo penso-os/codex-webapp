@@ -1,0 +1,46 @@
+{
+  "name": "codex-webapp",
+  "version": "0.1.0-beta.1",
+  "description": "Unofficial. Respectful web app surface, doctor, and safety wrapper for Codex App users.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/penso-os/codex-webapp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/penso-os/codex-webapp/issues"
+  },
+  "homepage": "https://github.com/penso-os/codex-webapp#readme",
+  "keywords": [
+    "codex",
+    "codex-app",
+    "remote-control",
+    "webapp",
+    "browser-ui"
+  ],
+  "bin": {
+    "codex-webapp": "bin/codex-webapp.mjs"
+  },
+  "scripts": {
+    "doctor": "node ./bin/codex-webapp.mjs doctor",
+    "smoke": "node ./bin/codex-webapp.mjs smoke",
+    "test": "node --test",
+    "start:dry-run": "node ./bin/codex-webapp.mjs start --dry-run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "docs",
+    "src",
+    "ACKNOWLEDGEMENTS.md",
+    "README.md",
+    "README.ja.md",
+    "SECURITY.md",
+    "SUPPORT.md",
+    "CONTRIBUTING.md",
+    "LICENSE.md"
+  ]
+}
