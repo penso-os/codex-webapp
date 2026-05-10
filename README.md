@@ -57,6 +57,19 @@ npx -y codex-webapp start
 
 `npx` runs the published npm package temporarily. You do not need to create a project, clone this repository, or install Codex WebApp by hand just to try it.
 
+## It only works while the process is running
+
+Codex WebApp is not a hosted cloud service. The browser UI is available only while `npx -y codex-webapp start` is running on your computer.
+
+| Event | What happens | What to do |
+| --- | --- | --- |
+| You close the terminal window | The browser UI stops. | Run `npx -y codex-webapp start` again. |
+| The computer sleeps | The connection may survive, but it can also break. | Restart the command if the page no longer opens. |
+| The computer restarts | The process is gone. | Run `start` again after rebooting. |
+| You want to open it from a phone or another PC | `127.0.0.1` means “this same computer,” so another device cannot use that URL directly. | Put Tailscale, Cloudflare Access, or an equivalent trusted access boundary in front first. |
+
+Start with the same computer first: run the command, then open `http://127.0.0.1:8214/` in that computer’s browser. Phone and remote access should come after that local check passes.
+
 ## Quick start from a terminal
 
 Use this route if you prefer to control the commands yourself. Codex WebApp requires **Node.js 20 or newer** and **Codex CLI 0.130.0 or newer**.
@@ -127,7 +140,7 @@ Codex WebApp does not include telemetry, analytics, a browser extension, or a pr
 | Codex CLI | `0.130.0` or newer, because `codex remote-control` is required. |
 | Node.js | `20` or newer. |
 | Network binding | `127.0.0.1` by default. Non-loopback hosts require explicit opt-in. |
-| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.3`. |
+| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.4`. |
 
 If Codex is missing or too old, update it first.
 

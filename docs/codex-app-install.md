@@ -15,24 +15,26 @@ Tailscale, Cloudflare Access, or an equivalent trusted boundary.
 
 ## Paste Prompt
 
-Paste this prompt into Codex App:
+Paste this prompt into Codex App. Japanese is intentional here: it is written for users who may be more comfortable asking Codex App in Japanese.
 
 ```text
-Please verify Codex WebApp on this machine.
+Codex WebApp をこのPCで起動してください。
 
-Constraints:
-- Treat it as an unofficial companion UI, not an OpenAI-endorsed tool.
-- Do not paste or print tokens, cookies, private repository content, customer data, or internal URLs.
-- Keep any raw Codex browser server or app-server on localhost or behind Tailscale, Cloudflare Access, or an equivalent trusted boundary.
+これは OpenAI 公式ではない、Codex App向けの非公式 companion UI です。
+token、cookie、private repository の中身、顧客データ、内部URLは表示しないでください。
+`.env` や `SECRET`、`KEY`、`TOKEN` を含むterminal出力は、AIにもissueにも貼らないでください。
 
-Steps:
-1. Check whether Codex is available and whether `codex remote-control --help` works.
-2. If Codex is older than 0.130.0, explain the update that is needed.
-3. Run `npx -y codex-webapp doctor`.
-4. Run `npx -y codex-webapp start --dry-run`.
-5. If a UI server is available, run `npx -y codex-webapp smoke --url http://127.0.0.1:8214/`.
-6. Use `--browser --screenshot artifacts/codex-webapp.png` only when browser evidence is needed.
-7. Summarize pass/fail status and start a small diagnosis if a step fails.
+次の順番で進めてください。
+
+1. まず `node -v`、`npm -v`、`npx -v` を確認してください。`npx` が使えない場合は、ここで止まり、Node.js/npm が必要だと説明してください。
+2. `npx -y codex-webapp@latest doctor` を実行して、Codex CLI が 0.130.0 以上で、`codex remote-control` が使えるか確認してください。
+3. `doctor` がエラーを出した場合は、ここで止まり、`start` には進まず、原因と直し方を説明してください。
+4. `npx -y codex-webapp@latest start --dry-run` を実行して、起動予定の内容を確認してください。
+5. 問題なければ `npx -y codex-webapp@latest start` を実行して、ローカルのブラウザUIを起動してください。
+6. 起動できたら、ブラウザで `http://127.0.0.1:8214/` を開くように案内してください。
+7. この terminal window を閉じるとWeb画面は止まること、止めたいときは `Ctrl+C` を押すこと、PCを再起動した後はもう一度 `npx -y codex-webapp@latest start` が必要なことも説明してください。
+
+外出先のPCやスマホから使う場合は、raw UI server をpublic IPへ直接公開せず、Tailscale、Cloudflare Access、または同等の信頼できるアクセス境界を使ってください。認証なしのport-forwardingやpublic tunnelは使わないでください。
 ```
 
 The proof we want is not that a developer can type commands. The proof is that

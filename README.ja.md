@@ -28,34 +28,53 @@ Codex は、ターミナルだけで完結するツールから、よりアプ�
 
 ## Codex App から始める
 
-Codex App を使っている場合は、次の指示をそのまま貼ってください。Codex が準備確認、dry-run、ローカルUIの起動、smoke test までを進め、成功・失敗を報告する想定です。
+Codex App を使っている場合は、次の指示をそのまま貼ってください。Codex が「npm package を一時実行して、ローカルのWeb画面を起動し、ブラウザで開く」ことを認識しやすいように書いてあります。
 
 ```text
-Please set up Codex WebApp on this machine.
+Codex WebApp をこのPCで起動してください。
 
-Use this npm package:
-codex-webapp
+これは OpenAI 公式ではない、Codex App向けの非公式 companion UI です。
+token、cookie、private repository の中身、顧客データ、内部URLは表示しないでください。
+`.env` や `SECRET`、`KEY`、`TOKEN` を含むterminal出力は、AIにもissueにも貼らないでください。
 
-Please:
-1. Check my Codex version. Codex CLI must be 0.130.0 or newer because this uses `codex remote-control`.
-2. Run the package doctor.
-3. Run start in dry-run mode first.
-4. Start the local browser UI on localhost.
-5. Smoke-test the printed local URL.
+次の順番で進めてください。
 
-Do not print tokens, cookies, private repo contents, customer data, or internal URLs.
-Keep any raw Codex browser server on localhost unless I have a trusted access boundary such as Tailscale or Cloudflare Access.
+1. まず `node -v`、`npm -v`、`npx -v` を確認してください。`npx` が使えない場合は、ここで止まり、Node.js/npm が必要だと説明してください。
+2. `npx -y codex-webapp@latest doctor` を実行して、Codex CLI が 0.130.0 以上で、`codex remote-control` が使えるか確認してください。
+3. `doctor` がエラーを出した場合は、ここで止まり、`start` には進まず、原因と直し方を説明してください。
+4. `npx -y codex-webapp@latest start --dry-run` を実行して、起動予定の内容を確認してください。
+5. 問題なければ `npx -y codex-webapp@latest start` を実行して、ローカルのブラウザUIを起動してください。
+6. 起動できたら、ブラウザで `http://127.0.0.1:8214/` を開くように案内してください。
+7. この terminal window を閉じるとWeb画面は止まること、止めたいときは `Ctrl+C` を押すこと、PCを再起動した後はもう一度 `npx -y codex-webapp@latest start` が必要なことも説明してください。
+
+外出先のPCやスマホから使う場合は、raw UI server をpublic IPへ直接公開せず、Tailscale、Cloudflare Access、または同等の信頼できるアクセス境界を使ってください。認証なしのport-forwardingやpublic tunnelは使わないでください。
 ```
 
 実際には、おおむね次のようなコマンドが実行されます。
 
 ```bash
-npx -y codex-webapp doctor
-npx -y codex-webapp start --dry-run
-npx -y codex-webapp start
+npx -y codex-webapp@latest doctor
+npx -y codex-webapp@latest start --dry-run
+npx -y codex-webapp@latest start
 ```
 
-`npx` は、npm に公開されている package を一時的に実行する仕組みです。試すだけなら、この repository を clone したり、手元で新しい project を作ったりする必要はありません。
+`npx` は、npm に公開されている package を一時的に実行する仕組みです。試すだけなら、この repository を clone したり、手元で新しい project を作ったりする必要はありません。READMEでは、常に公開済みの最新パッチを使うため `codex-webapp@latest` を指定しています。
+
+> **秘密情報はユーザー側でも確認してください。** Codexには秘密情報を出さないよう指示していますが、AIへの指示だけで安全が保証されるわけではありません。terminal output、`.env`、error log、issue本文を貼る前に、`SECRET`、`KEY`、`TOKEN`、cookie、顧客名、private URL が含まれていないか必ず見てください。
+
+## 起動中だけ使える、という基本
+
+Codex WebApp はクラウド上に常駐するサービスではありません。あなたのPC上で `npx -y codex-webapp@latest start` が動いている間だけ、ブラウザUIが使えます。
+
+| できごと | 何が起きるか | どうすればよいか |
+| --- | --- | --- |
+| terminal window を閉じた | Web画面は止まります。 | もう一度 `npx -y codex-webapp@latest start` を実行します。 |
+| 起動中のUIを止めたい | terminal上のプロセスを止めます。 | 起動しているterminalで `Ctrl+C` を押してください。 |
+| PCをスリープした | 復帰後に動く場合もありますが、接続が切れることがあります。 | 開けない場合は起動し直してください。 |
+| PCを再起動した | プロセスは残りません。 | 再起動後にもう一度 `start` してください。 |
+| 別のPCやスマホから開きたい | `127.0.0.1` は「このPC自身」を指すため、そのままでは別端末から開けません。 | Tailscale、Cloudflare Access、または同等の安全なアクセス境界を用意してください。 |
+
+まずは同じPCのブラウザで `http://127.0.0.1:8214/` を開けるところまでを確認してください。スマホや外出先PCからの利用は、その次の段階です。認証なしのport-forwardingやpublic tunnelでraw UI serverを公開すると、意図しない第三者にあなたのPC上のCodex操作面を見せる危険があります。
 
 ## ターミナルから始める
 
@@ -127,7 +146,7 @@ Codex WebApp は telemetry、analytics、browser extension、project-operated ph
 | Codex CLI | `codex remote-control` を使うため、`0.130.0` 以上が必要です。 |
 | Node.js | `20` 以上が必要です。 |
 | network binding | デフォルトは `127.0.0.1`。非 loopback host は明示的な opt-in が必要です。 |
-| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.3` です。 |
+| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.4` です。 |
 
 Codex が入っていない、または古い場合は、先に更新してください。
 
