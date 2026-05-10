@@ -28,9 +28,9 @@ Constraints:
 Steps:
 1. Check whether Codex is available and whether `codex remote-control --help` works.
 2. If Codex is older than 0.130.0, explain the update that is needed.
-3. Run `npx codex-webapp doctor`.
-4. Run `npx codex-webapp start --dry-run`.
-5. If a UI server is available, run `npx codex-webapp smoke --url http://127.0.0.1:8214/`.
+3. Run `npx -y codex-webapp doctor`.
+4. Run `npx -y codex-webapp start --dry-run`.
+5. If a UI server is available, run `npx -y codex-webapp smoke --url http://127.0.0.1:8214/`.
 6. Use `--browser --screenshot artifacts/codex-webapp.png` only when browser evidence is needed.
 7. Summarize pass/fail status and start a small diagnosis if a step fails.
 ```

@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { createServer } from "node:net";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
@@ -17,6 +18,17 @@ import {
 } from "./codexWeb.js";
 
 const BANNER = "Codex WebApp — unofficial OpenAI Codex companion; not endorsed by OpenAI.";
+const DEFAULT_WEB_URL = "http://127.0.0.1:8214/";
+
+function codexAppFlowLines(url = DEFAULT_WEB_URL) {
+  return [
+    "Codex App flow:",
+    "  1. Paste a setup request into the Codex App prompt.",
+    "  2. Codex runs: npx -y codex-webapp start",
+    `  3. When it starts, open: ${url}`,
+    "  4. Keep this terminal window open. Closing it will stop the browser UI.",
+  ];
+}
 
 export function main(argv = process.argv) {
   const command = argv[2] ?? "help";
@@ -97,7 +109,9 @@ export function doctor() {
     "`codex remote-control` is available.",
     `codex-web reference: ${CODEX_WEB_REFERENCE}`,
     "Next:",
-    "  npx codex-webapp start",
+    "  npx -y codex-webapp start",
+    "",
+    ...codexAppFlowLines(),
   ]);
 }
 
@@ -126,11 +140,16 @@ export async function start(args = []) {
       BANNER,
       "Dry run passed.",
       `Would start codex-web: ${plannedWebUrl}`,
+      "",
+      ...codexAppFlowLines(plannedWebUrl),
+      "",
       "Would start:",
       `  npx ${npxArgs.join(" ")}`,
     ]);
     return;
   }
+
+  await assertPortAvailable(options.host, options.port);
 
   if (!options.yes) {
     console.log(BANNER);
@@ -148,6 +167,9 @@ export async function start(args = []) {
 
   console.log(`Starting codex-web from ${CODEX_WEB_REFERENCE}...`);
   console.log(`Open: ${plannedWebUrl}`);
+  console.log("");
+  for (const line of codexAppFlowLines(plannedWebUrl)) console.log(line);
+  console.log("");
   console.log("Keep this terminal open. Expose it only through a trusted local, Tailscale, Cloudflare Access, or equivalent boundary.");
   const codexPath = resolveCodexPath();
   const child = spawn("npx", npxArgs, {
@@ -159,6 +181,23 @@ export async function start(args = []) {
   });
   child.on("exit", (code) => {
     process.exit(code ?? 0);
+  });
+}
+
+async function assertPortAvailable(host, port) {
+  await new Promise((resolve, reject) => {
+    const server = createServer();
+    server.once("error", (error) => {
+      if (error?.code === "EADDRINUSE") {
+        reject(new Error(`Port ${port} is already in use on ${host}. Codex WebApp may already be running. Close the other terminal window, or start with --port <port>.`));
+        return;
+      }
+      reject(error);
+    });
+    server.once("listening", () => {
+      server.close(resolve);
+    });
+    server.listen(port, host);
   });
 }
 
@@ -176,8 +215,16 @@ Commands:
   codex-webapp smoke --url http://127.0.0.1:8214/
   codex-webapp smoke --browser --screenshot artifacts/codex-webapp.png
 
-Quick start:
-  npx codex-webapp doctor
+Quick start from Codex App:
+  Paste a request that asks Codex to run:
+    npx -y codex-webapp doctor
+    npx -y codex-webapp start
+  Then open:
+    ${DEFAULT_WEB_URL}
+
+Terminal quick start:
+  npx -y codex-webapp doctor
+  npx -y codex-webapp start
 `);
 }
 

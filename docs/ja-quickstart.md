@@ -24,7 +24,7 @@ codex remote-control --help
 ## 3. friendly doctor を実行
 
 ```bash
-npx codex-webapp doctor
+npx -y codex-webapp doctor
 ```
 
 Codexが古い、または `remote-control` が見つからない場合は、次に打つべきコマンドを表示します。
@@ -32,13 +32,13 @@ Codexが古い、または `remote-control` が見つからない場合は、次
 ## 4. Codex-style Web UI を起動
 
 ```bash
-npx codex-webapp start
+npx -y codex-webapp start
 ```
 
 このコマンドは起動前に確認プロンプトを出します。自動化された信頼済み環境だけで `--yes` を使ってください。
 
 ```bash
-npx codex-webapp start --yes
+npx -y codex-webapp start --yes
 ```
 
 ## 5. ブラウザで表示できるか確認
@@ -46,7 +46,7 @@ npx codex-webapp start --yes
 UIサーバーが起動している状態で、実ブラウザ疎通を確認します。
 
 ```bash
-npx codex-webapp smoke \
+npx -y codex-webapp smoke \
   --url http://127.0.0.1:8214/
 ```
 
@@ -55,7 +55,7 @@ npx codex-webapp smoke \
 スクリーンショットも残したい場合は、Playwrightを使うdeep smokeを実行します。
 
 ```bash
-npx codex-webapp smoke \
+npx -y codex-webapp smoke \
   --browser \
   --url http://127.0.0.1:8214/ \
   --screenshot artifacts/codex-webapp.png
