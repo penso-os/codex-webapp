@@ -10,7 +10,7 @@
 
 Codex `0.130.0` では、ヘッドレスでリモート制御可能な app-server を起動しやすくする入口として `codex remote-control` が追加されました。[^1] これは大きな前進ですが、そのリリースだけで誰でもすぐに使えるブラウザUIやスマホ向け体験が同梱されたわけではありません。Codex WebApp はその間を埋めるために、ローカルの Codex を確認し、`localhost` 上で Codex 風のWeb画面を起動し、最後に本当に開けたかを smoke test します。
 
-![Codex WebApp overview](./docs/assets/codex-webapp-overview.svg)
+![Codex WebApp flow](./docs/assets/codex-webapp-readme.png)
 
 ## なぜ作ったか
 
@@ -150,7 +150,7 @@ Codex WebApp は telemetry、analytics、browser extension、project-operated ph
 | Codex CLI | `codex remote-control` を使うため、`0.130.0` 以上が必要です。 |
 | Node.js | `20` 以上が必要です。 |
 | network binding | デフォルトは `127.0.0.1`。非 loopback host は明示的な opt-in が必要です。 |
-| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.5` です。 |
+| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.6` です。 |
 
 Codex が入っていない、または古い場合は、先に更新してください。
 

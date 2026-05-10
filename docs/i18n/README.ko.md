@@ -80,7 +80,7 @@ npx -y codex-webapp smoke \
 
 이 패키지는 Codex App native marketplace plugin, browser extension, one-click installer, managed hosting service가 아닙니다. Codex App에 프롬프트를 붙여 넣고, Codex가 `npx`로 npm 패키지를 실행하는 방식입니다.
 
-현재 release는 `0.1.5`이며 early, compatibility-first입니다. 현재 `0xcaff/codex-web` commit `585613f5a3a355af5aefc388ca4e31b07a472cda`를 참조하는 Codex 스타일 browser runtime을 실행하고, 그 주변에 설치, 안전, 문서, 검증 evidence 계층을 더합니다.
+현재 release는 `0.1.6`이며 early, compatibility-first입니다. 현재 `0xcaff/codex-web` commit `585613f5a3a355af5aefc388ca4e31b07a472cda`를 참조하는 Codex 스타일 browser runtime을 실행하고, 그 주변에 설치, 안전, 문서, 검증 evidence 계층을 더합니다.
 
 ## Security And Privacy
 

@@ -10,7 +10,7 @@
 
 Codex `0.130.0` added `codex remote-control` as a simpler entrypoint for starting a headless, remotely controllable app-server.[^1] That is an important foundation, but the CLI release does not by itself give every user a ready-to-use browser or phone-friendly experience. Codex WebApp fills that gap by checking your local Codex installation, starting a pinned browser surface on `localhost`, and verifying that the page actually opened.
 
-![Codex WebApp overview](./docs/assets/codex-webapp-overview.svg)
+![Codex WebApp flow](./docs/assets/codex-webapp-readme.png)
 
 ## Why this exists
 
@@ -144,7 +144,7 @@ Codex WebApp does not include telemetry, analytics, a browser extension, or a pr
 | Codex CLI | `0.130.0` or newer, because `codex remote-control` is required. |
 | Node.js | `20` or newer. |
 | Network binding | `127.0.0.1` by default. Non-loopback hosts require explicit opt-in. |
-| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.5`. |
+| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.6`. |
 
 If Codex is missing or too old, update it first.
 
