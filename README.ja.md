@@ -127,7 +127,7 @@ Codex WebApp は telemetry、analytics、browser extension、project-operated ph
 | Codex CLI | `codex remote-control` を使うため、`0.130.0` 以上が必要です。 |
 | Node.js | `20` 以上が必要です。 |
 | network binding | デフォルトは `127.0.0.1`。非 loopback host は明示的な opt-in が必要です。 |
-| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.0` です。 |
+| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.1` です。 |
 
 Codex が入っていない、または古い場合は、先に更新してください。
 

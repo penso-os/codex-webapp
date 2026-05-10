@@ -149,7 +149,14 @@ export async function start(args = []) {
   console.log(`Starting codex-web from ${CODEX_WEB_REFERENCE}...`);
   console.log(`Open: ${plannedWebUrl}`);
   console.log("Keep this terminal open. Expose it only through a trusted local, Tailscale, Cloudflare Access, or equivalent boundary.");
-  const child = spawn("npx", npxArgs, { stdio: "inherit" });
+  const codexPath = resolveCodexPath();
+  const child = spawn("npx", npxArgs, {
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      CODEX_CLI_PATH: codexPath || process.env.CODEX_CLI_PATH || "codex",
+    },
+  });
   child.on("exit", (code) => {
     process.exit(code ?? 0);
   });
