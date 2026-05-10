@@ -32,6 +32,9 @@ test("public package boundary guard rejects private runtime dependency specs", (
       optionalDependencies: {
         "local-engine": "file:../penso-render-envelope",
       },
+      peerDependencies: {
+        "@penso-os/render-envelope": "^0.0.0-private",
+      },
     },
     lockfile: {
       packages: {

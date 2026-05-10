@@ -15,6 +15,7 @@ const DEPENDENCY_FIELDS = [
 const PRIVATE_PACKAGE_NAMES = new Set([
   "penso-render-envelope",
   "@penso/penso-render-envelope",
+  "@penso-os/render-envelope",
 ]);
 
 const PRIVATE_PACKAGE_PREFIXES = [
@@ -30,6 +31,7 @@ const PRIVATE_SPEC_PATTERNS = [
   { label: "local link dependency", pattern: /^link:/i },
   { label: "workspace dependency", pattern: /^workspace:/i },
   { label: "private package alias", pattern: /(?:^|:)@penso\//i },
+  { label: "private package alias", pattern: /(?:^|:)@penso-os\/render-envelope(?:$|@)/i },
   { label: "private engine package", pattern: /(?:^|[/:@])penso-render-envelope(?:$|[#/:@])/i },
 ];
 
