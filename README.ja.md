@@ -74,6 +74,8 @@ npx -y codex-webapp smoke \
 
 `codex-webapp start` は、この package に同梱されているローカル renderer bridge を起動します。bridge は、このMacにインストール済みの Codex App から webview を準備し、抽出済み renderer を `~/.cache/codex-webapp/` にcacheし、cache header付きで静的配信します。別runtimeを同梱せず、hosted service でもなく、phone-home もしません。
 
+この package は adapter であり、Codex App 本体ではありません。Codex/OpenAI binaries、`app.asar`、抽出済み `webview/`、token、cookie、signed URL、private session database、private repository contents、customer data は同梱しません。実行時にユーザーのローカル Codex App を読み、`webview/` だけをユーザーのローカル cache に抽出して、そのローカルコピーを配信します。
+
 | コマンド | 目的 |
 | --- | --- |
 | `doctor` | Codex CLI、version、`remote-control` の利用可否を確認します。 |
@@ -82,6 +84,8 @@ npx -y codex-webapp smoke \
 | `start --yes` | 対話確認なしで起動します。 |
 | `smoke` | UI URLが応答し、期待する文字列を含むか確認します。 |
 | `smoke --browser --screenshot ...` | browserで開いて証跡を保存します。 |
+
+adapter boundary の開発者向け概要は [Architecture](./docs/architecture.md) を参照してください。
 
 ## 安全性
 
@@ -107,7 +111,7 @@ Codex WebApp はクラウドサービスではありません。`npx -y codex-we
 | 項目 | version または補足 |
 | --- | --- |
 | Codex CLI | `0.130.0` 以上。 |
-| Codex App | `/Applications/Codex.app` にインストール済み。 |
+| Codex App | macOS app として `/Applications/Codex.app` にインストール済み。 |
 | Node.js | `20` 以上。 |
 | network binding | デフォルトは `127.0.0.1`。 |
 | package | npm の `codex-webapp`。 |
@@ -121,6 +125,8 @@ codex remote-control --help
 ```
 
 Codex App が標準位置に無い場合は先にインストールするか、`CODEX_APP_PATH` でローカルの `Codex.app` を指定するか、`CODEX_WEBAPP_CODEX_ASAR` でローカルの `app.asar` を指定してください。この package は実行時に `webview/` だけを抽出します。上流rendererファイルは package に含めません。
+
+ローカル renderer cache を消したい場合は `~/.cache/codex-webapp/` を削除してください。次に `start` したときに再作成されます。
 
 ## Development
 
