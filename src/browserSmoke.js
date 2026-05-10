@@ -66,7 +66,7 @@ async function runBrowserSmokeWithOptions(options) {
       waitUntil: "networkidle",
       timeout: options.timeoutMs,
     });
-    await page.getByText(options.text, { exact: false }).waitFor({
+    await page.waitForFunction((needle) => document.body?.innerText.includes(needle), options.text, {
       timeout: options.timeoutMs,
     });
     if (options.screenshot) {
