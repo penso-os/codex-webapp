@@ -112,7 +112,7 @@ Codex WebApp is not a hosted cloud service. The browser UI exists only while `np
 | --- | --- |
 | Codex CLI | `0.130.0` or newer. |
 | Codex App | macOS app installed at `/Applications/Codex.app`. |
-| Node.js | `20` or newer. |
+| Node.js | `20.11` or newer. |
 | Binding | `127.0.0.1` by default. |
 | Package | `codex-webapp` from npm. |
 

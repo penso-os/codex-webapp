@@ -112,7 +112,7 @@ Codex WebApp はクラウドサービスではありません。`npx -y codex-we
 | --- | --- |
 | Codex CLI | `0.130.0` 以上。 |
 | Codex App | macOS app として `/Applications/Codex.app` にインストール済み。 |
-| Node.js | `20` 以上。 |
+| Node.js | `20.11` 以上。 |
 | network binding | デフォルトは `127.0.0.1`。 |
 | package | npm の `codex-webapp`。 |
 

@@ -11,6 +11,7 @@ import {
   inspectRelativePaths,
   inspectSourceTree,
   parseArgs,
+  runRequiredCommand,
 } from "../scripts/verify-clean-release.mjs";
 
 test("clean release gate accepts flag and environment private engine path", () => {
@@ -112,4 +113,17 @@ test("clean release gate scans runtime source content while allowing boundary do
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+test("clean release gate reports an invalid command cwd as a bounded failure", () => {
+  const result = runRequiredCommand({
+    label: "private engine npm test",
+    command: "npm",
+    args: ["test"],
+    cwd: "/tmp/codex-webapp-missing-private-engine",
+    log: () => {},
+  });
+
+  assert.equal(result.ok, false);
+  assert.equal(result.status, "spawn-error");
 });

@@ -344,14 +344,23 @@ function runPackDryRun(rootDir, log) {
   }
 }
 
-function runRequiredCommand({ label, command, args, cwd, log }) {
+export function runRequiredCommand({ label, command, args, cwd, log }) {
   log(`==> ${label}`);
-  const result = spawnSync(command, args, {
-    cwd,
-    stdio: "inherit",
-    env: process.env,
-  });
-  return { label, ok: result.status === 0, status: result.status };
+  try {
+    const result = spawnSync(command, args, {
+      cwd,
+      stdio: "inherit",
+      env: process.env,
+    });
+    if (result.error) {
+      log(`Command could not start: ${result.error.message}`);
+      return { label, ok: false, status: "spawn-error" };
+    }
+    return { label, ok: result.status === 0, status: result.status };
+  } catch (error) {
+    log(`Command could not start: ${error.message}`);
+    return { label, ok: false, status: "spawn-error" };
+  }
 }
 
 function printSummary({ results, failures, log, errorLog }) {
