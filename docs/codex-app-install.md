@@ -8,6 +8,11 @@ affiliated with or endorsed by OpenAI.
 This is a prompt-driven npm package path, not a native Codex App marketplace
 install. Codex App runs the setup commands for the user.
 
+The package is only the local adapter. It does not include Codex/OpenAI
+binaries, `app.asar`, a pre-extracted `webview/`, tokens, cookies, signed URLs,
+private session databases, private repository contents, or customer data. At
+runtime it uses the Codex App renderer already installed on the user's Mac.
+
 The intended experience is simple: paste one instruction into Codex App, let
 Codex check/install the companion, start the local Codex-style Web surface, and
 run a smoke test. For access from another PC or a phone, keep the machine behind
