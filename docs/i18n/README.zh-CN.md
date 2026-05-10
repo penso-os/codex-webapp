@@ -80,7 +80,7 @@ npx -y codex-webapp smoke \
 
 这不是 Codex App native marketplace plugin、browser extension、one-click installer 或 managed hosting service。它的使用方式是：把提示词粘贴到 Codex App，让 Codex 通过 `npx` 执行 npm 包。
 
-当前 release 为 `0.1.4`，仍处于 early 阶段，并采用 compatibility-first 方针。它目前运行一个引用 `0xcaff/codex-web` commit `585613f5a3a355af5aefc388ca4e31b07a472cda` 的 Codex 风格 browser runtime，并在其周围增加安装、安全、文档和验证证据层。
+当前 release 为 `0.1.5`，仍处于 early 阶段，并采用 compatibility-first 方针。它目前运行一个引用 `0xcaff/codex-web` commit `585613f5a3a355af5aefc388ca4e31b07a472cda` 的 Codex 风格 browser runtime，并在其周围增加安装、安全、文档和验证证据层。
 
 ## Security And Privacy
 

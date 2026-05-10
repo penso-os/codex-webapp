@@ -61,14 +61,18 @@ npx -y codex-webapp start
 
 Codex WebApp is not a hosted cloud service. The browser UI is available only while `npx -y codex-webapp start` is running on your computer.
 
+The important point: **after your computer restarts, that process does not come back automatically.** Even if the browser UI worked yesterday, you need to run `npx -y codex-webapp start` again after a reboot unless you have deliberately configured auto-start.
+
 | Event | What happens | What to do |
 | --- | --- | --- |
 | You close the terminal window | The browser UI stops. | Run `npx -y codex-webapp start` again. |
 | The computer sleeps | The connection may survive, but it can also break. | Restart the command if the page no longer opens. |
-| The computer restarts | The process is gone. | Run `start` again after rebooting. |
+| The computer restarts | The process is gone. Yesterday’s browser UI is no longer running. | Run `npx -y codex-webapp start` again after rebooting. |
 | You want to open it from a phone or another PC | `127.0.0.1` means “this same computer,” so another device cannot use that URL directly. | Put Tailscale, Cloudflare Access, or an equivalent trusted access boundary in front first. |
 
 Start with the same computer first: run the command, then open `http://127.0.0.1:8214/` in that computer’s browser. Phone and remote access should come after that local check passes.
+
+If you use this every day, you may eventually want an auto-start setup that runs `npx -y codex-webapp start` when the computer starts. Treat that as an advanced, after-the-first-success step. First confirm manual `doctor`, `start`, browser access, how to stop the process, and your trusted access boundary. If you do configure auto-start through Login Items, `launchd`, or a process manager you control, still do not expose the raw UI server without authentication.
 
 ## Quick start from a terminal
 
@@ -140,7 +144,7 @@ Codex WebApp does not include telemetry, analytics, a browser extension, or a pr
 | Codex CLI | `0.130.0` or newer, because `codex remote-control` is required. |
 | Node.js | `20` or newer. |
 | Network binding | `127.0.0.1` by default. Non-loopback hosts require explicit opt-in. |
-| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.4`. |
+| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.5`. |
 
 If Codex is missing or too old, update it first.
 

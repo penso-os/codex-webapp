@@ -66,15 +66,19 @@ npx -y codex-webapp@latest start
 
 Codex WebApp はクラウド上に常駐するサービスではありません。あなたのPC上で `npx -y codex-webapp@latest start` が動いている間だけ、ブラウザUIが使えます。
 
+大事なポイントは、**PCを再起動すると、このプロセスは自動では戻らない**ということです。昨日使えていても、今日PCを再起動した後は、もう一度 `npx -y codex-webapp@latest start` を実行する必要があります。
+
 | できごと | 何が起きるか | どうすればよいか |
 | --- | --- | --- |
 | terminal window を閉じた | Web画面は止まります。 | もう一度 `npx -y codex-webapp@latest start` を実行します。 |
 | 起動中のUIを止めたい | terminal上のプロセスを止めます。 | 起動しているterminalで `Ctrl+C` を押してください。 |
 | PCをスリープした | 復帰後に動く場合もありますが、接続が切れることがあります。 | 開けない場合は起動し直してください。 |
-| PCを再起動した | プロセスは残りません。 | 再起動後にもう一度 `start` してください。 |
+| PCを再起動した | プロセスは残りません。昨日のWeb画面はもう動いていません。 | 再起動後にもう一度 `npx -y codex-webapp@latest start` を実行してください。 |
 | 別のPCやスマホから開きたい | `127.0.0.1` は「このPC自身」を指すため、そのままでは別端末から開けません。 | Tailscale、Cloudflare Access、または同等の安全なアクセス境界を用意してください。 |
 
 まずは同じPCのブラウザで `http://127.0.0.1:8214/` を開けるところまでを確認してください。スマホや外出先PCからの利用は、その次の段階です。認証なしのport-forwardingやpublic tunnelでraw UI serverを公開すると、意図しない第三者にあなたのPC上のCodex操作面を見せる危険があります。
+
+毎日使う場合は、PC起動時に自動で `npx -y codex-webapp@latest start` を実行する設定を検討できます。これは「PCを再起動しても、毎回自分でstartし直さなくてよい」ようにするための設定です。ただし、初回セットアップではなく常用者向けです。まず手動起動で `doctor`、`start`、ブラウザ表示、止め方、アクセス境界を確認してから、macOS の Login Items、`launchd`、または自分が管理できるプロセスマネージャーで設定してください。自動起動する場合も、raw UI server を認証なしで外へ出さないでください。
 
 ## ターミナルから始める
 
@@ -146,7 +150,7 @@ Codex WebApp は telemetry、analytics、browser extension、project-operated ph
 | Codex CLI | `codex remote-control` を使うため、`0.130.0` 以上が必要です。 |
 | Node.js | `20` 以上が必要です。 |
 | network binding | デフォルトは `127.0.0.1`。非 loopback host は明示的な opt-in が必要です。 |
-| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.4` です。 |
+| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.5` です。 |
 
 Codex が入っていない、または古い場合は、先に更新してください。
 
