@@ -3,14 +3,22 @@ import path from "node:path";
 
 import { WebSocketServer } from "ws";
 
+import { createAuditEvidenceHook, emitAuditEvidence } from "./auditEvidenceHook.js";
 import { CodexAppServerBridge } from "./appServerBridge.js";
+import {
+  bridgeErrorResponse,
+  bridgeEvent,
+  bridgeResponse,
+  parseBridgeFrame,
+  serializeBridgeMessage,
+} from "./bridgeEventEnvelope.js";
 
 const DEFAULT_HOST_CONFIG = { id: "local", display_name: "Local", kind: "local" };
 const DEBUG_BRIDGE = process.env.CODEX_WEBAPP_DEBUG_BRIDGE === "1";
 
-export function attachElectronBridge(server, { cwd = process.cwd(), codexPath = "codex", appServer = null } = {}) {
+export function attachElectronBridge(server, { cwd = process.cwd(), codexPath = "codex", appServer = null, auditEvidence = null } = {}) {
   const wss = new WebSocketServer({ noServer: true });
-  const state = createBridgeState({ cwd, codexPath, appServer });
+  const state = createBridgeState({ cwd, codexPath, appServer, auditEvidence });
 
   server.on("upgrade", (request, socket, head) => {
     const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "127.0.0.1"}`);
@@ -47,10 +55,11 @@ export function attachElectronBridge(server, { cwd = process.cwd(), codexPath = 
   return { wss, state };
 }
 
-function createBridgeState({ cwd, codexPath, appServer }) {
+function createBridgeState({ cwd, codexPath, appServer, auditEvidence }) {
   const workspaceRoot = path.resolve(cwd || process.cwd());
   return {
     cwd: workspaceRoot,
+    auditEvidenceHook: createAuditEvidenceHook(auditEvidence),
     appServer:
       appServer ||
       new CodexAppServerBridge({
@@ -71,24 +80,21 @@ function createBridgeState({ cwd, codexPath, appServer }) {
 
 function sendInitialState(ws, state) {
   for (const [key, value] of state.sharedObjects.entries()) {
-    sendEvent(ws, { type: "shared-object-updated", key, value });
+    sendEvent(ws, state, { type: "shared-object-updated", key, value });
   }
 }
 
 async function handleFrame(ws, state, data) {
-  let frame;
-  try {
-    frame = JSON.parse(Buffer.isBuffer(data) ? data.toString("utf8") : String(data));
-  } catch {
-    return;
-  }
+  const frame = parseBridgeFrame(data);
+  if (!frame) return;
   const { id, kind, payload } = frame || {};
   debug("frame", { id, kind, payloadType: payload?.type, url: payload?.url });
+  emitAuditEvidence(state.auditEvidenceHook, { type: "bridge-frame", kind, payloadType: payload?.type });
   try {
     const result = await handleRequest(ws, state, kind, payload);
-    if (id) sendJson(ws, { id, ok: true, result });
+    if (id) sendJson(ws, bridgeResponse(id, result));
   } catch (error) {
-    if (id) sendJson(ws, { id, ok: false, error: String(error?.message ?? error) });
+    if (id) sendJson(ws, bridgeErrorResponse(id, error));
   }
 }
 
@@ -114,20 +120,20 @@ async function handleViewMessage(ws, state, message) {
     return;
   }
   if (message.type === "shared-object-subscribe" && message.key) {
-    sendEvent(ws, { type: "shared-object-updated", key: message.key, value: state.sharedObjects.get(message.key) });
+    sendEvent(ws, state, { type: "shared-object-updated", key: message.key, value: state.sharedObjects.get(message.key) });
     return;
   }
   if (message.type === "shared-object-set" && message.key) {
     state.sharedObjects.set(message.key, message.value);
-    sendEvent(ws, { type: "shared-object-updated", key: message.key, value: message.value });
+    sendEvent(ws, state, { type: "shared-object-updated", key: message.key, value: message.value });
     return;
   }
   if (message.type === "persisted-atom-sync-request") {
-    sendEvent(ws, { type: "persisted-atom-sync", state: persistedAtomState() });
+    sendEvent(ws, state, { type: "persisted-atom-sync", state: persistedAtomState() });
     return;
   }
   if (message.type === "persisted-atom-update") {
-    sendEvent(ws, { type: "persisted-atom-updated", key: message.key, value: message.value, deleted: message.deleted });
+    sendEvent(ws, state, { type: "persisted-atom-updated", key: message.key, value: message.value, deleted: message.deleted });
   }
 }
 
@@ -135,7 +141,7 @@ async function sendMcpResponse(ws, state, message) {
   const request = message.request;
   if (!request || typeof request !== "object") return;
   const response = await responseForMcpRequest(state, request);
-  sendEvent(ws, {
+  sendEvent(ws, state, {
     type: "mcp-response",
     hostId: message.hostId || "local",
     message: response,
@@ -162,7 +168,7 @@ function sendFetchResponse(ws, state, request) {
   const endpoint = parseCodexEndpoint(request.url);
   debug("fetch", { endpoint, requestId: request.requestId });
   const body = responseForEndpoint(endpoint, state, request);
-  sendEvent(ws, {
+  sendEvent(ws, state, {
     type: "fetch-response",
     hostId: request.hostId || "local",
     requestId: request.requestId,
@@ -300,13 +306,14 @@ function parseBody(body) {
   }
 }
 
-function sendEvent(ws, payload) {
-  sendJson(ws, { type: "event", payload });
+function sendEvent(ws, state, payload) {
+  emitAuditEvidence(state?.auditEvidenceHook, { type: "bridge-event", payloadType: payload?.type });
+  sendJson(ws, bridgeEvent(payload));
 }
 
 function sendJson(ws, message) {
   if (ws.readyState === ws.OPEN) {
-    ws.send(JSON.stringify(message));
+    ws.send(serializeBridgeMessage(message));
   }
 }
 
