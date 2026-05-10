@@ -7,7 +7,7 @@ import { parseSmokeArgs, runHttpSmoke } from "../src/browserSmoke.js";
 test("parseSmokeArgs uses a helpful default codex remote URL", () => {
   assert.deepEqual(parseSmokeArgs([]), {
     url: "http://127.0.0.1:8214/",
-    text: "What should we",
+    text: "Codex",
     timeoutMs: 10_000,
     maxResponseMs: 5_000,
     browser: false,
@@ -45,8 +45,8 @@ test("parseSmokeArgs treats screenshot as browser evidence request", () => {
   assert.equal(parseSmokeArgs(["--screenshot", "out.png"]).browser, true);
 });
 
-test("runHttpSmoke verifies a reachable codex-web style page without Playwright", async () => {
-  const server = await startFixtureServer("What should we today?");
+test("runHttpSmoke verifies a reachable Codex WebApp page without Playwright", async () => {
+  const server = await startFixtureServer("Codex renderer loaded");
   try {
     await runHttpSmoke(["--url", server.url, "--timeout-ms", "5000"]);
   } finally {

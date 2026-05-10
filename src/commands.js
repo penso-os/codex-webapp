@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { createServer } from "node:net";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
@@ -9,10 +9,10 @@ import {
   MIN_CODEX_VERSION,
 } from "./version.js";
 import { runSmoke } from "./browserSmoke.js";
+import { startLocalServer } from "./localServer.js";
 import {
-  CODEX_WEB_REFERENCE,
   assertSafeHost,
-  buildCodexWebNpxArgs,
+  buildLocalServerSummary,
   buildWebUrl,
   parseStartArgs,
 } from "./codexWeb.js";
@@ -60,8 +60,9 @@ export function main(argv = process.argv) {
 }
 
 export function doctor() {
-  const codex = spawnSync("codex", ["--version"], { encoding: "utf8" });
   const codexPath = resolveCodexPath();
+  const codexCommand = codexPath || "codex";
+  const codex = spawnSync(codexCommand, ["--version"], { encoding: "utf8" });
   if (codex.error || codex.status !== 0) {
     fail([
       "Codex CLI was not found.",
@@ -89,7 +90,7 @@ export function doctor() {
     ]);
   }
 
-  const helpResult = spawnSync("codex", ["remote-control", "--help"], {
+  const helpResult = spawnSync(codexCommand, ["remote-control", "--help"], {
     encoding: "utf8",
   });
   if (helpResult.status !== 0) {
@@ -102,12 +103,25 @@ export function doctor() {
     ]);
   }
 
+  const appServerResult = spawnSync(codexCommand, ["app-server", "--help"], {
+    encoding: "utf8",
+  });
+  if (appServerResult.status !== 0) {
+    fail([
+      "`codex app-server --help` did not run successfully.",
+      "",
+      "Codex is installed, but the local app-server substrate is unavailable.",
+      "Update Codex and try again:",
+      "  npm install -g @openai/codex@latest",
+    ]);
+  }
+
   ok([
     BANNER,
     `Codex CLI is ready: ${versionText}`,
     `Codex executable: ${codexPath || "unknown"}`,
     "`codex remote-control` is available.",
-    `codex-web reference: ${CODEX_WEB_REFERENCE}`,
+    "`codex app-server` is available.",
     "Next:",
     "  npx -y codex-webapp start",
     "",
@@ -117,20 +131,16 @@ export function doctor() {
 
 export async function start(args = []) {
   const options = parseStartArgs(args);
-  const check = spawnSync("codex", ["remote-control", "--help"], {
+  const codexPath = resolveCodexPath();
+  const codexCommand = codexPath || process.env.CODEX_CLI_PATH || "codex";
+  const check = spawnSync(codexCommand, ["app-server", "--help"], {
     encoding: "utf8",
   });
-  if (check.status !== 0) {
-    fail([
-      "Cannot start because `codex remote-control` is unavailable.",
-      "Run:",
-      "  npx codex-webapp doctor",
-    ]);
-  }
+  const appServerReady = check.status === 0;
 
   assertSafeHost(options.host, { allowNonLoopback: options.allowNonLoopback });
   const plannedWebUrl = buildWebUrl({ host: options.host, port: options.port });
-  const npxArgs = buildCodexWebNpxArgs({
+  const localServer = buildLocalServerSummary({
     host: options.host,
     port: options.port,
   });
@@ -139,12 +149,10 @@ export async function start(args = []) {
     ok([
       BANNER,
       "Dry run passed.",
-      `Would start codex-web: ${plannedWebUrl}`,
+      `Would start Codex WebApp: ${plannedWebUrl}`,
+      `Runtime: ${localServer.runtime}`,
       "",
       ...codexAppFlowLines(plannedWebUrl),
-      "",
-      "Would start:",
-      `  npx ${npxArgs.join(" ")}`,
     ]);
     return;
   }
@@ -153,7 +161,7 @@ export async function start(args = []) {
 
   if (!options.yes) {
     console.log(BANNER);
-    console.log(`About to start codex-web: ${plannedWebUrl}`);
+    console.log(`About to start Codex WebApp: ${plannedWebUrl}`);
     console.log("Default expectation: keep it on localhost or behind Tailscale, Cloudflare Access, or an equivalent trusted boundary.");
     console.log("Anyone who can reach this URL can operate Codex on this host.");
     const rl = createInterface({ input, output });
@@ -165,22 +173,21 @@ export async function start(args = []) {
     }
   }
 
-  console.log(`Starting codex-web from ${CODEX_WEB_REFERENCE}...`);
+  console.log("Starting Codex WebApp local server...");
+  if (!appServerReady) {
+    console.log("Warning: `codex app-server --help` did not pass. The UI will still open, but health will show the Codex substrate issue.");
+    console.log("Run `npx codex-webapp doctor` in another terminal for the exact fix.");
+  }
   console.log(`Open: ${plannedWebUrl}`);
   console.log("");
   for (const line of codexAppFlowLines(plannedWebUrl)) console.log(line);
   console.log("");
   console.log("Keep this terminal open. Expose it only through a trusted local, Tailscale, Cloudflare Access, or equivalent boundary.");
-  const codexPath = resolveCodexPath();
-  const child = spawn("npx", npxArgs, {
-    stdio: "inherit",
-    env: {
-      ...process.env,
-      CODEX_CLI_PATH: codexPath || process.env.CODEX_CLI_PATH || "codex",
-    },
-  });
-  child.on("exit", (code) => {
-    process.exit(code ?? 0);
+  await startLocalServer({
+    host: options.host,
+    port: options.port,
+    codexPath: codexCommand,
+    cwd: process.cwd(),
   });
 }
 
@@ -206,7 +213,7 @@ export function help() {
 
 Commands:
   codex-webapp doctor       Check Codex CLI >= ${MIN_CODEX_VERSION}
-  codex-webapp start        Confirm, then start codex-web
+  codex-webapp start        Confirm, then start Codex WebApp
   codex-webapp start --dry-run
   codex-webapp start --yes  Start without the confirmation prompt
   codex-webapp start --port 8214
@@ -239,7 +246,7 @@ function fail(lines) {
 }
 
 export function resolveCodexPath() {
-  const result = spawnSync("bash", ["-lc", "command -v codex"], {
+  const result = spawnSync("bash", ["-l", "-c", "which codex"], {
     encoding: "utf8",
   });
   if (result.status !== 0) return "";

@@ -1,6 +1,3 @@
-export const CODEX_WEB_UPSTREAM = "github:0xcaff/codex-web";
-export const CODEX_WEB_COMMIT = "585613f5a3a355af5aefc388ca4e31b07a472cda";
-export const CODEX_WEB_REFERENCE = `${CODEX_WEB_UPSTREAM}#${CODEX_WEB_COMMIT}`;
 export const DEFAULT_WEB_HOST = "127.0.0.1";
 export const DEFAULT_WEB_PORT = 8214;
 
@@ -21,21 +18,17 @@ export function buildWebUrl({ host = DEFAULT_WEB_HOST, port = DEFAULT_WEB_PORT }
 export function assertSafeHost(host, { allowNonLoopback = false } = {}) {
   if (allowNonLoopback || isLoopbackHost(host)) return;
   throw new Error(
-    "Refusing to bind codex-web to a non-loopback host without --allow-non-loopback. Put Tailscale, Cloudflare Access, WireGuard, SSH tunneling, or an equivalent trusted boundary in front before remote access.",
+    "Refusing to bind Codex WebApp to a non-loopback host without --allow-non-loopback. Put Tailscale, Cloudflare Access, WireGuard, SSH tunneling, or an equivalent trusted boundary in front before remote access.",
   );
 }
 
-export function buildCodexWebNpxArgs({ host = DEFAULT_WEB_HOST, port = DEFAULT_WEB_PORT } = {}) {
-  return [
-    "--yes",
-    "--package",
-    CODEX_WEB_REFERENCE,
-    "codex-web",
-    "--host",
+export function buildLocalServerSummary({ host = DEFAULT_WEB_HOST, port = DEFAULT_WEB_PORT } = {}) {
+  return {
     host,
-    "--port",
-    String(port),
-  ];
+    port,
+    url: buildWebUrl({ host, port }),
+    runtime: "package-owned Codex App renderer bridge",
+  };
 }
 
 export function isLoopbackHost(host) {
