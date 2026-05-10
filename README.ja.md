@@ -112,7 +112,7 @@ Codex WebApp はクラウドサービスではありません。`npx -y codex-we
 | --- | --- |
 | Codex CLI | `0.130.0` 以上。 |
 | Codex App | macOS app として `/Applications/Codex.app` にインストール済み。 |
-| Node.js | `20` 以上。 |
+| Node.js | `20.11` 以上。 |
 | network binding | デフォルトは `127.0.0.1`。 |
 | package | npm の `codex-webapp`。 |
 
@@ -134,7 +134,10 @@ Codex App が標準位置に無い場合は先にインストールするか、`
 npm test
 npm pack --dry-run
 npm run start:dry-run
+npm run verify:clean-release
 ```
+
+release handoff 前に clean release gate を実行し、redact 済みの証跡を添付してください。詳細は [Clean Release Verification](./docs/clean-release-verification.md) を参照してください。
 
 ## Support
 

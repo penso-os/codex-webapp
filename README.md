@@ -112,7 +112,7 @@ Codex WebApp is not a hosted cloud service. The browser UI exists only while `np
 | --- | --- |
 | Codex CLI | `0.130.0` or newer. |
 | Codex App | macOS app installed at `/Applications/Codex.app`. |
-| Node.js | `20` or newer. |
+| Node.js | `20.11` or newer. |
 | Binding | `127.0.0.1` by default. |
 | Package | `codex-webapp` from npm. |
 
@@ -134,7 +134,10 @@ To remove the local renderer cache, delete `~/.cache/codex-webapp/`. It will be 
 npm test
 npm pack --dry-run
 npm run start:dry-run
+npm run verify:clean-release
 ```
+
+Before release handoff, run the clean release gate and attach redacted evidence. See [Clean Release Verification](./docs/clean-release-verification.md).
 
 ## Support
 
