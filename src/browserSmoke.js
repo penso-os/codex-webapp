@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
 
-const DEFAULT_TEXT = "What should we build";
+const DEFAULT_TEXT = "What should we";
 const DEFAULT_MAX_RESPONSE_MS = 5_000;
 
 export function parseSmokeArgs(args = []) {

@@ -127,7 +127,7 @@ Codex WebApp does not include telemetry, analytics, a browser extension, or a pr
 | Codex CLI | `0.130.0` or newer, because `codex remote-control` is required. |
 | Node.js | `20` or newer. |
 | Network binding | `127.0.0.1` by default. Non-loopback hosts require explicit opt-in. |
-| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.1`. |
+| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.2`. |
 
 If Codex is missing or too old, update it first.
 
