@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
 
+import { parseAppServerMessage, serializeAppServerMessage } from "./appServerMessageCodec.js";
+
 const REQUEST_TIMEOUT_MS = 30_000;
 const CLIENT_INFO = {
   name: "codex-webapp",
@@ -95,7 +97,7 @@ export class CodexAppServerBridge {
     if (!this.process?.stdin?.writable) {
       throw new Error("codex app-server stdin is not writable");
     }
-    this.process.stdin.write(`${JSON.stringify(message)}\n`);
+    this.process.stdin.write(serializeAppServerMessage(message));
   }
 
   receiveStdout(chunk) {
@@ -110,12 +112,8 @@ export class CodexAppServerBridge {
   }
 
   receiveLine(line) {
-    let message;
-    try {
-      message = JSON.parse(line);
-    } catch {
-      return;
-    }
+    const message = parseAppServerMessage(line);
+    if (!message) return;
     if (message.id && this.pending.has(message.id)) {
       const pending = this.pending.get(message.id);
       this.pending.delete(message.id);

@@ -5,13 +5,14 @@ import { createServer } from "node:http";
 
 import {
   BROWSER_PRELOAD_ROUTE,
-  createStaticRenderer,
+  createStaticRendererAssetSource,
   isUnsafeRendererPath,
   matchRendererAsset,
-  prepareCodexAppRenderer,
+  prepareRendererAssetSource,
   streamAsset,
-} from "./codexAppRenderer.js";
+} from "./rendererAssetSource.js";
 import { attachElectronBridge } from "./electronBridge.js";
+import { createProjectionManifest } from "./projectionManifest.js";
 import { extractVersion, MIN_CODEX_VERSION } from "./version.js";
 
 const HEALTH_CACHE_MS = 1_000;
@@ -34,15 +35,15 @@ export async function startLocalServer({
   const staticRenderer =
     renderer ||
     (rendererRoot
-      ? await createStaticRenderer({ webviewRoot: rendererRoot })
-      : await prepareCodexAppRenderer({ asarPath: codexAppAsarPath, cacheRoot: runtimeCacheRoot }));
+      ? await createStaticRendererAssetSource({ webviewRoot: rendererRoot })
+      : await prepareRendererAssetSource({ asarPath: codexAppAsarPath, cacheRoot: runtimeCacheRoot }));
   const healthReader = createHealthReader({ codexPath });
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url ?? "/", `http://${request.headers.host ?? `${host}:${port}`}`);
 
       if (request.method === "GET" && url.pathname === "/api/health") {
-        const body = Buffer.from(JSON.stringify({ ...healthReader(), renderer: rendererSummary(staticRenderer) }, null, 2));
+        const body = Buffer.from(JSON.stringify({ ...healthReader(), renderer: createProjectionManifest(staticRenderer) }, null, 2));
         send(response, 200, makeHeaders("application/json; charset=utf-8", body), body);
         return;
       }
@@ -152,15 +153,6 @@ function readHealth({ codexPath }) {
       name: "Codex WebApp",
       mode: "local-first",
     },
-  };
-}
-
-function rendererSummary(renderer) {
-  return {
-    engine: "codex-app-renderer-static",
-    fileCount: renderer.fileCount,
-    sourceAsar: renderer.sourceAsar,
-    root: renderer.root,
   };
 }
 
