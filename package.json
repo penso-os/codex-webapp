@@ -23,6 +23,7 @@
     "codex-webapp": "bin/codex-webapp.mjs"
   },
   "scripts": {
+    "check:public-boundary": "node ./scripts/check-public-package-boundary.mjs",
     "doctor": "node ./bin/codex-webapp.mjs doctor",
     "smoke": "node ./bin/codex-webapp.mjs smoke",
     "test": "node --test",
@@ -38,6 +39,7 @@
   "files": [
     "bin",
     "docs",
+    "scripts",
     "src",
     "ACKNOWLEDGEMENTS.md",
     "README.md",
