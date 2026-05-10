@@ -27,6 +27,7 @@
     "doctor": "node ./bin/codex-webapp.mjs doctor",
     "smoke": "node ./bin/codex-webapp.mjs smoke",
     "test": "node --test",
+    "verify:clean-release": "node ./scripts/verify-clean-release.mjs",
     "start:dry-run": "node ./bin/codex-webapp.mjs start --dry-run"
   },
   "dependencies": {

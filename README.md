@@ -134,7 +134,10 @@ To remove the local renderer cache, delete `~/.cache/codex-webapp/`. It will be 
 npm test
 npm pack --dry-run
 npm run start:dry-run
+npm run verify:clean-release
 ```
+
+Before release handoff, run the clean release gate and attach redacted evidence. See [Clean Release Verification](./docs/clean-release-verification.md).
 
 ## Support
 

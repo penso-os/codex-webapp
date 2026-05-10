@@ -134,7 +134,10 @@ Codex App が標準位置に無い場合は先にインストールするか、`
 npm test
 npm pack --dry-run
 npm run start:dry-run
+npm run verify:clean-release
 ```
+
+release handoff 前に clean release gate を実行し、redact 済みの証跡を添付してください。詳細は [Clean Release Verification](./docs/clean-release-verification.md) を参照してください。
 
 ## Support
 
