@@ -55,7 +55,9 @@ test("assertSafeHost refuses non-loopback host without explicit override", () =>
 test("buildCodexWebNpxArgs launches the upstream thin web UI", () => {
   assert.deepEqual(buildCodexWebNpxArgs({ host: "127.0.0.1", port: 8214 }), [
     "--yes",
+    "--package",
     CODEX_WEB_REFERENCE,
+    "codex-web",
     "--host",
     "127.0.0.1",
     "--port",

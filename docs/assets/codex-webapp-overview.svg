@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
   <title id="title">Codex WebApp overview</title>
-  <desc id="desc">A public-safe overview showing Codex App prompt, npm beta package, local browser UI, smoke evidence, and trusted access boundary.</desc>
+  <desc id="desc">A public-safe overview showing Codex App prompt, npm package, local browser UI, smoke evidence, and trusted access boundary.</desc>
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#111111"/>

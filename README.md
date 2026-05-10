@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/penso-os/codex-webapp/actions/workflows/ci.yml/badge.svg)](https://github.com/penso-os/codex-webapp/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/codex-webapp?label=npm)](https://www.npmjs.com/package/codex-webapp)
-[![npm beta](https://img.shields.io/npm/v/codex-webapp/beta?label=beta)](https://www.npmjs.com/package/codex-webapp)
 [![License](https://img.shields.io/npm/l/codex-webapp)](./LICENSE.md)
 
 [English](./README.md) / [日本語](./README.ja.md) / [한국어](./docs/i18n/README.ko.md) / [简体中文](./docs/i18n/README.zh-CN.md)
@@ -35,7 +34,7 @@ If you are using Codex App, paste the following instruction. Codex should perfor
 Please set up Codex WebApp on this machine.
 
 Use this npm package:
-codex-webapp@beta
+codex-webapp
 
 Please:
 1. Check my Codex version. Codex CLI must be 0.130.0 or newer because this uses `codex remote-control`.
@@ -51,9 +50,9 @@ Keep any raw Codex browser server on localhost unless I have a trusted access bo
 Codex will normally run commands like the following.
 
 ```bash
-npx -y codex-webapp@beta doctor
-npx -y codex-webapp@beta start --dry-run
-npx -y codex-webapp@beta start
+npx -y codex-webapp doctor
+npx -y codex-webapp start --dry-run
+npx -y codex-webapp start
 ```
 
 `npx` runs the published npm package temporarily. You do not need to create a project, clone this repository, or install Codex WebApp by hand just to try it.
@@ -63,9 +62,9 @@ npx -y codex-webapp@beta start
 Use this route if you prefer to control the commands yourself. Codex WebApp requires **Node.js 20 or newer** and **Codex CLI 0.130.0 or newer**.
 
 ```bash
-npx -y codex-webapp@beta doctor
-npx -y codex-webapp@beta start --dry-run
-npx -y codex-webapp@beta start
+npx -y codex-webapp doctor
+npx -y codex-webapp start --dry-run
+npx -y codex-webapp start
 ```
 
 By default, the browser UI opens on the local machine at the following URL.
@@ -77,13 +76,13 @@ http://127.0.0.1:8214/
 When the page is running, confirm that the browser surface is reachable.
 
 ```bash
-npx -y codex-webapp@beta smoke --url http://127.0.0.1:8214/
+npx -y codex-webapp smoke --url http://127.0.0.1:8214/
 ```
 
 If you need browser evidence for a report or issue, run the browser-backed smoke test and save a screenshot.
 
 ```bash
-npx -y codex-webapp@beta smoke \
+npx -y codex-webapp smoke \
   --browser \
   --url http://127.0.0.1:8214/ \
   --screenshot artifacts/codex-webapp.png
@@ -128,7 +127,7 @@ Codex WebApp does not include telemetry, analytics, a browser extension, or a pr
 | Codex CLI | `0.130.0` or newer, because `codex remote-control` is required. |
 | Node.js | `20` or newer. |
 | Network binding | `127.0.0.1` by default. Non-loopback hosts require explicit opt-in. |
-| Package channel | `codex-webapp@beta` while the package is in beta. |
+| Package channel | `codex-webapp` from the npm `latest` channel. Current release: `0.1.0`. |
 
 If Codex is missing or too old, update it first.
 
@@ -146,8 +145,8 @@ Most setup failures fall into a small number of categories. Run the commands in 
 | --- | --- | --- |
 | `Codex CLI was not found` | `codex --version` | Install or update Codex CLI. |
 | `remote-control` is unavailable | `codex remote-control --help` | Upgrade to Codex CLI `0.130.0` or newer. |
-| The UI does not open | `npx -y codex-webapp@beta start --dry-run` | Check whether the port is available and whether the launch command is correct. |
-| The smoke test fails | `npx -y codex-webapp@beta smoke --url http://127.0.0.1:8214/` | Confirm the server is still running and that you are using the printed URL. |
+| The UI does not open | `npx -y codex-webapp start --dry-run` | Check whether the port is available and whether the launch command is correct. |
+| The smoke test fails | `npx -y codex-webapp smoke --url http://127.0.0.1:8214/` | Confirm the server is still running and that you are using the printed URL. |
 | You need proof for debugging | `smoke --browser --screenshot artifacts/codex-webapp.png` | Attach the screenshot and redacted logs to an issue. |
 
 ## Development

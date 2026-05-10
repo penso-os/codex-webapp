@@ -28,7 +28,9 @@ export function assertSafeHost(host, { allowNonLoopback = false } = {}) {
 export function buildCodexWebNpxArgs({ host = DEFAULT_WEB_HOST, port = DEFAULT_WEB_PORT } = {}) {
   return [
     "--yes",
+    "--package",
     CODEX_WEB_REFERENCE,
+    "codex-web",
     "--host",
     host,
     "--port",

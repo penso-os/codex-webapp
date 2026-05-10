@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/penso-os/codex-webapp/actions/workflows/ci.yml/badge.svg)](https://github.com/penso-os/codex-webapp/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/codex-webapp?label=npm)](https://www.npmjs.com/package/codex-webapp)
-[![npm beta](https://img.shields.io/npm/v/codex-webapp/beta?label=beta)](https://www.npmjs.com/package/codex-webapp)
 [![License](https://img.shields.io/npm/l/codex-webapp)](./LICENSE.md)
 
 [English](./README.md) / 日本語 / [한국어](./docs/i18n/README.ko.md) / [简体中文](./docs/i18n/README.zh-CN.md)
@@ -35,7 +34,7 @@ Codex App を使っている場合は、次の指示をそのまま貼ってく�
 Please set up Codex WebApp on this machine.
 
 Use this npm package:
-codex-webapp@beta
+codex-webapp
 
 Please:
 1. Check my Codex version. Codex CLI must be 0.130.0 or newer because this uses `codex remote-control`.
@@ -51,9 +50,9 @@ Keep any raw Codex browser server on localhost unless I have a trusted access bo
 実際には、おおむね次のようなコマンドが実行されます。
 
 ```bash
-npx -y codex-webapp@beta doctor
-npx -y codex-webapp@beta start --dry-run
-npx -y codex-webapp@beta start
+npx -y codex-webapp doctor
+npx -y codex-webapp start --dry-run
+npx -y codex-webapp start
 ```
 
 `npx` は、npm に公開されている package を一時的に実行する仕組みです。試すだけなら、この repository を clone したり、手元で新しい project を作ったりする必要はありません。
@@ -63,9 +62,9 @@ npx -y codex-webapp@beta start
 自分でコマンドを実行したい場合は、次の順番で進めてください。Codex WebApp には **Node.js 20 以上** と **Codex CLI 0.130.0 以上** が必要です。
 
 ```bash
-npx -y codex-webapp@beta doctor
-npx -y codex-webapp@beta start --dry-run
-npx -y codex-webapp@beta start
+npx -y codex-webapp doctor
+npx -y codex-webapp start --dry-run
+npx -y codex-webapp start
 ```
 
 デフォルトでは、ローカルマシン上の次のURLでブラウザUIが開きます。
@@ -77,13 +76,13 @@ http://127.0.0.1:8214/
 UIが起動したら、URLに到達できるかを確認します。
 
 ```bash
-npx -y codex-webapp@beta smoke --url http://127.0.0.1:8214/
+npx -y codex-webapp smoke --url http://127.0.0.1:8214/
 ```
 
 issue や検証用にブラウザの証跡が必要な場合は、screenshot 付きの smoke test を実行できます。
 
 ```bash
-npx -y codex-webapp@beta smoke \
+npx -y codex-webapp smoke \
   --browser \
   --url http://127.0.0.1:8214/ \
   --screenshot artifacts/codex-webapp.png
@@ -128,7 +127,7 @@ Codex WebApp は telemetry、analytics、browser extension、project-operated ph
 | Codex CLI | `codex remote-control` を使うため、`0.130.0` 以上が必要です。 |
 | Node.js | `20` 以上が必要です。 |
 | network binding | デフォルトは `127.0.0.1`。非 loopback host は明示的な opt-in が必要です。 |
-| package channel | beta 中は `codex-webapp@beta` を使ってください。 |
+| package channel | npm の `latest` channel から `codex-webapp` を使ってください。現在の release は `0.1.0` です。 |
 
 Codex が入っていない、または古い場合は、先に更新してください。
 
@@ -146,8 +145,8 @@ codex remote-control --help
 | --- | --- | --- |
 | `Codex CLI was not found` と出る | `codex --version` | Codex CLI を install または update してください。 |
 | `remote-control` が使えない | `codex remote-control --help` | Codex CLI `0.130.0` 以上へ更新してください。 |
-| UI が開かない | `npx -y codex-webapp@beta start --dry-run` | port の衝突や起動コマンドを確認してください。 |
-| smoke test が失敗する | `npx -y codex-webapp@beta smoke --url http://127.0.0.1:8214/` | server が起動中か、URL が正しいかを確認してください。 |
+| UI が開かない | `npx -y codex-webapp start --dry-run` | port の衝突や起動コマンドを確認してください。 |
+| smoke test が失敗する | `npx -y codex-webapp smoke --url http://127.0.0.1:8214/` | server が起動中か、URL が正しいかを確認してください。 |
 | debug 用の証跡が欲しい | `smoke --browser --screenshot artifacts/codex-webapp.png` | screenshot と redact 済み log を issue に添付してください。 |
 
 ## Development

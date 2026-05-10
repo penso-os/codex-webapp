@@ -26,7 +26,7 @@ Korean documentation has been translated for setup convenience.
 Please set up Codex WebApp on this machine.
 
 Use this npm package:
-codex-webapp@beta
+codex-webapp
 
 Please:
 1. Check my Codex version.
@@ -44,9 +44,9 @@ Do not print tokens, cookies, private repo contents, customer data, or internal 
 Codex는 내부적으로 다음과 같은 명령을 실행합니다.
 
 ```bash
-npx -y codex-webapp@beta doctor
-npx -y codex-webapp@beta start --dry-run
-npx -y codex-webapp@beta start
+npx -y codex-webapp doctor
+npx -y codex-webapp start --dry-run
+npx -y codex-webapp start
 ```
 
 `npx`는 npm에 공개된 패키지를 임시로 실행하는 도구입니다. 사용자가 직접 프로젝트를 만들거나 의존성을 관리할 필요를 줄여 줍니다.
@@ -56,9 +56,9 @@ npx -y codex-webapp@beta start
 ```bash
 codex --version
 codex remote-control --help
-npx -y codex-webapp@beta doctor
-npx -y codex-webapp@beta start --dry-run
-npx -y codex-webapp@beta start
+npx -y codex-webapp doctor
+npx -y codex-webapp start --dry-run
+npx -y codex-webapp start
 ```
 
 기본 로컬 URL:
@@ -70,17 +70,17 @@ http://127.0.0.1:8214/
 ## Smoke Test
 
 ```bash
-npx -y codex-webapp@beta smoke \
+npx -y codex-webapp smoke \
   --url http://127.0.0.1:8214/
 ```
 
 공개 이슈나 스크린샷에는 토큰, 쿠키, private repository, 고객 데이터, 내부 URL을 넣지 마세요.
 
-## 현재 beta의 범위
+## 현재 범위
 
 이 패키지는 Codex App native marketplace plugin, browser extension, one-click installer, managed hosting service가 아닙니다. Codex App에 프롬프트를 붙여 넣고, Codex가 `npx`로 npm 패키지를 실행하는 방식입니다.
 
-현재 beta는 experimental이며 compatibility-first입니다. 현재 `0xcaff/codex-web` commit `585613f5a3a355af5aefc388ca4e31b07a472cda`를 참조하는 Codex 스타일 browser runtime을 실행하고, 그 주변에 설치, 안전, 문서, 검증 evidence 계층을 더합니다.
+현재 release는 `0.1.0`이며 early, compatibility-first입니다. 현재 `0xcaff/codex-web` commit `585613f5a3a355af5aefc388ca4e31b07a472cda`를 참조하는 Codex 스타일 browser runtime을 실행하고, 그 주변에 설치, 안전, 문서, 검증 evidence 계층을 더합니다.
 
 ## Security And Privacy
 
@@ -90,6 +90,6 @@ npx -y codex-webapp@beta smoke \
 
 ## Acknowledgements
 
-현재 beta는 Codex 스타일 브라우저 화면을 제공하는 public project `0xcaff/codex-web`의 접근 방식을 사용하고 참조합니다. 이 프로젝트는 그 주변에 배포, doctor, 안전 경계, 문서, 검증 evidence 계층을 추가합니다.
+현재 release는 Codex 스타일 브라우저 화면을 제공하는 public project `0xcaff/codex-web`의 접근 방식을 사용하고 참조합니다. 이 프로젝트는 그 주변에 배포, doctor, 안전 경계, 문서, 검증 evidence 계층을 추가합니다.
 
 License: [Apache-2.0](../../LICENSE.md)
