@@ -50,7 +50,7 @@ npx codex-webapp smoke \
   --url http://127.0.0.1:8214/
 ```
 
-通常のsmokeはPlaywrightなしで、UI URLを取得して `What should we build` が含まれているか確認します。
+通常のsmokeはPlaywrightなしで、UI URLを取得して `What should we` が含まれているか確認します。
 
 スクリーンショットも残したい場合は、Playwrightを使うdeep smokeを実行します。
 
