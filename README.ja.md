@@ -6,7 +6,11 @@
 
 [English](./README.md) / 日本語 / [한국어](./docs/i18n/README.ko.md) / [简体中文](./docs/i18n/README.zh-CN.md)
 
-**Codex WebApp は、Codex App ユーザー向けの非公式・ローカルファーストな renderer bridge です。** インストール済み Codex App の `/Applications/Codex.app/Contents/Resources/app.asar` から `webview/` だけを `~/.cache/codex-webapp/` へ抽出し、その renderer を `127.0.0.1` で配信し、最後に smoke test まで行えるようにします。
+**Codex の作業を、スマホで見守れる。プロジェクトはあなたのPCに置いたまま。**
+
+Codex WebApp は、あなたの Mac に入っている Codex App をローカルのブラウザ画面として開くための companion package です。Codex に作業を任せている間、別の画面から様子を見たい。そのときもプロジェクト、secret、作業中のファイルは、作業しているPCに置いたままにしたい。そういう場面のための小さな道具です。Codex App と Codex CLI は別途インストール済みである必要があります。
+
+この project は非公式であり、OpenAI と提携・承認・推薦されたものではありません。冒頭の local-first な説明は設計上の境界であり、絶対的な安全性の保証ではありません。安全確認、起動前チェック、smoke 証跡を添えて、ローカルで使うことを前提にしています。
 
 ![Codex WebApp の流れ](./docs/assets/codex-webapp-overview.svg)
 
@@ -17,7 +21,7 @@ Codex App に次を貼ってください。
 ```text
 Codex WebApp をこのPCで起動してください。
 
-これは Codex App ユーザー向けの非公式ローカル renderer bridge です。
+これは Codex App ユーザー向けの非公式ローカル companion UI です。
 token、cookie、private repository の中身、顧客データ、内部URL、`.env`、SECRET、KEY、TOKEN を含む内容は表示しないでください。
 
 次の順番で進めてください。
@@ -28,9 +32,9 @@ token、cookie、private repository の中身、顧客データ、内部URL、`.
 4. `npx -y codex-webapp@latest start --dry-run` を実行してください。
 5. 問題なければ `npx -y codex-webapp@latest start` を実行してください。
 6. 起動できたら `http://127.0.0.1:8214/` をブラウザで開くように案内してください。
-7. terminal window を閉じるとWeb画面は止まること、PC再起動後はもう一度 start が必要なことも説明してください。
+7. `Ctrl+C` を押すか terminal window を閉じるとWeb画面は止まること、PC再起動後はもう一度 start が必要なことも説明してください。
 
-スマホや外出先PCから使う場合は、raw UI server を public IP へ直接公開せず、Tailscale、Cloudflare Access、または同等の信頼できるアクセス境界を使ってください。
+スマホや外出先PCから使う場合は、raw UI server を public IP へ直接公開せず、Tailscale、Cloudflare Access、WireGuard、SSH tunneling、または同等の信頼できるアクセス境界を使ってください。
 ```
 
 実際にはおおむね次を実行します。
@@ -70,41 +74,50 @@ npx -y codex-webapp smoke \
   --screenshot artifacts/codex-webapp.png
 ```
 
-## 何を起動するか
+## 実行すると何が起きるか
 
-`codex-webapp start` は、この package に同梱されているローカル renderer bridge を起動します。bridge は、このMacにインストール済みの Codex App から webview を準備し、抽出済み renderer を `~/.cache/codex-webapp/` にcacheし、cache header付きで静的配信します。別runtimeを同梱せず、hosted service でもなく、phone-home もしません。
+`codex-webapp start` は、このPC上でローカル adapter を起動します。ブラウザ画面は、その command が動いている間だけ使えます。
 
-この package は adapter であり、Codex App 本体ではありません。Codex/OpenAI binaries、`app.asar`、抽出済み `webview/`、token、cookie、signed URL、private session database、private repository contents、customer data は同梱しません。実行時にユーザーのローカル Codex App を読み、`webview/` だけをユーザーのローカル cache に抽出して、そのローカルコピーを配信します。
+大まかな流れ:
 
-| コマンド | 目的 |
+1. ローカルの Codex tools が使えるか確認します。
+2. この Mac にインストール済みの Codex App からブラウザUIを準備します。
+3. デフォルトでは `http://127.0.0.1:8214/` でローカル配信します。
+4. ブラウザから同じPC上の Codex app server と通信できるようにします。
+5. `Ctrl+C`、terminal window の終了、接続が切れるほどの sleep、PC再起動で止まります。
+
+この package は hosted account を作りません。workspace の cloud copy も作りません。スマホから見られる状態を単独で作るものでもありません。スマホから使う場合は、先に Tailscale や Cloudflare Access などの信頼できるアクセス境界を置いてください。
+
+## この package に含まれないもの
+
+この package は adapter であり、Codex App 本体ではありません。次のものは含みません。
+
+- Codex / OpenAI binaries
+- `app.asar`
+- 抽出済み `webview/`
+- token、cookie、signed URL、private key
+- private session database
+- private repository contents、prompt、customer data、その他の user data
+- telemetry、analytics、browser extension、project-operated phone-home path
+
+## Network model
+
+Codex WebApp はデフォルトで `127.0.0.1` に bind します。つまり、同じPCからだけ開けます。非 loopback host で起動するには `--allow-non-loopback` が必要です。
+
+起動中の UI に到達できる人は、その host 上の Codex を操作できる可能性があります。raw UI server を public IP に直接公開しないでください。スマホや別PCから使う場合は、Tailscale、Cloudflare Access、WireGuard、SSH tunneling、または同等の信頼できるアクセス境界を使ってください。
+
+これは bounded local-first model であり、絶対的な安全性を保証するものではありません。
+
+## Commands
+
+| Command | 目的 |
 | --- | --- |
-| `doctor` | Codex CLI、version、`remote-control` の利用可否を確認します。 |
+| `doctor` | Codex CLI、version、local command の利用可否を確認します。 |
 | `start --dry-run` | 実際には起動せず、予定URLを表示します。 |
 | `start` | インストール済み Codex App renderer を準備して配信します。 |
 | `start --yes` | 対話確認なしで起動します。 |
 | `smoke` | UI URLが応答し、期待する文字列を含むか確認します。 |
 | `smoke --browser --screenshot ...` | browserで開いて証跡を保存します。 |
-
-adapter boundary の開発者向け概要は [Architecture](./docs/architecture.md) を参照してください。
-
-## 安全性
-
-URLに到達できる人は、そのhost上の Codex を操作できる可能性があります。そのため Codex WebApp はデフォルトで `127.0.0.1` に bind し、非 loopback host は `--allow-non-loopback` を明示しない限り拒否します。
-
-raw UI server を public IP に直接公開しないでください。スマホや別PCから使う場合は、Tailscale、Cloudflare Access、WireGuard、SSH tunneling、または同等の信頼できるアクセス境界を先に置いてください。
-
-Codex WebApp は telemetry、analytics、browser extension、project-operated phone-home path を含みません。
-
-## 起動中だけ使える
-
-Codex WebApp はクラウドサービスではありません。`npx -y codex-webapp start` がこのPCで動いている間だけ、ブラウザUIを使えます。
-
-| できごと | 何が起きるか | どうするか |
-| --- | --- | --- |
-| terminal window を閉じた | UIは止まります。 | もう一度 `npx -y codex-webapp start` を実行します。 |
-| PCをスリープした | 接続が切れることがあります。 | 開けない場合は起動し直します。 |
-| PCを再起動した | プロセスは残りません。 | 再起動後にもう一度 start します。 |
-| スマホから開きたい | `127.0.0.1` は同じPCだけです。 | 信頼できるアクセス境界を先に用意します。 |
 
 ## 必要条件
 
@@ -124,26 +137,61 @@ codex --version
 codex remote-control --help
 ```
 
-Codex App が標準位置に無い場合は先にインストールするか、`CODEX_APP_PATH` でローカルの `Codex.app` を指定するか、`CODEX_WEBAPP_CODEX_ASAR` でローカルの `app.asar` を指定してください。この package は実行時に `webview/` だけを抽出します。上流rendererファイルは package に含めません。
+Codex App が標準位置に無い場合は、先にインストールするか、`CODEX_APP_PATH` でローカルの `Codex.app` を指定するか、`CODEX_WEBAPP_CODEX_ASAR` でローカルの `app.asar` を指定してください。
 
-ローカル renderer cache を消したい場合は `~/.cache/codex-webapp/` を削除してください。次に `start` したときに再作成されます。
+## 技術的な境界
 
-## Development
+Codex WebApp は、インストール済み Codex App の `/Applications/Codex.app/Contents/Resources/app.asar` から `webview/` だけを `~/.cache/codex-webapp/` へ抽出し、その renderer を `127.0.0.1` で配信し、browser call をローカルの Codex app server へ橋渡しします。
+
+Codex App の renderer file は、実行時にあなたのPC上で準備されます。この npm package には含まれず、この project が upload するものでもありません。adapter boundary の開発者向け概要は [Architecture](./docs/architecture.md) を参照してください。
+
+## Release Evidence
+
+release handoff 前に clean release gate を実行し、redact 済みの証跡を添付してください。
 
 ```bash
+npm ci
 npm test
-npm pack --dry-run
-npm run start:dry-run
+npm run check:public-boundary
 npm run verify:clean-release
+npm pack --dry-run
 ```
 
-release handoff 前に clean release gate を実行し、redact 済みの証跡を添付してください。詳細は [Clean Release Verification](./docs/clean-release-verification.md) を参照してください。
+Codex App が入った Mac では、local browser evidence として次を含めることもできます。
+
+```bash
+npx -y codex-webapp start
+npx -y codex-webapp smoke --browser --url http://127.0.0.1:8214/
+```
+
+screenshot を共有する前に必ず確認してください。token、cookie、prompt、private repository contents、customer data、internal URL、その他の sensitive material は添付しないでください。詳細は [Clean Release Verification](./docs/clean-release-verification.md) を参照してください。
+
+## Stop / uninstall / cache cleanup
+
+| やりたいこと | command または操作 |
+| --- | --- |
+| 起動中の画面を止める | `codex-webapp start` を実行している terminal で `Ctrl+C` を押します。 |
+| もう一度起動する | `npx -y codex-webapp start` を実行します。 |
+| `npx` が使った npm cache を整理する | 通常の npm cache policy に従い、たとえば `npm cache verify` または `npm cache clean --force` を使います。 |
+| Codex WebApp のローカル renderer cache を消す | `~/.cache/codex-webapp/` を削除します。 |
+| global install した場合に削除する | `npm uninstall -g codex-webapp` を実行します。 |
+
+`~/.cache/codex-webapp/` は削除しても大丈夫です。次に `start` したときに再作成されます。
+
+## Known limitations
+
+- macOS Codex App が前提です。
+- local process が動いている間だけ使えます。
+- `127.0.0.1` は同じPCだけです。スマホから使うには信頼できる network boundary が必要です。
+- sleep、restart、VPN変更、tunnel変更で browser session が切れることがあります。
+- hosted identity、account management、remote access infrastructure は提供しません。
+- 非公式 project なので、Codex App internals の変更に合わせた update が必要になることがあります。
 
 ## Support
 
 issue には OS、shell、Node version、Codex version、実行した command、redact 済みの `doctor` / `start` / `smoke` output を入れてください。token、cookie、private repository contents、customer data、internal URL は public issue に貼らないでください。
 
-[SECURITY.md](./SECURITY.md) と [SUPPORT.md](./SUPPORT.md) も参照してください。
+[SECURITY.md](./SECURITY.md)、[SUPPORT.md](./SUPPORT.md)、Codex App user flow の [Codex App Install UX Guide](./docs/codex-app-install.md) も参照してください。
 
 ## License
 
