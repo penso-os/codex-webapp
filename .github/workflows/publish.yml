@@ -1,0 +1,46 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run every publish step except the npm registry mutation."
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run check:public-boundary
+      - run: npm run verify:clean-release
+      - run: npm pack --dry-run
+
+      - name: Publish package
+        if: github.event_name == 'release' || inputs.dry_run == false
+        run: npm publish
+
+      - name: Publish dry run
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
+        run: npm publish --dry-run
