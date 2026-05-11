@@ -16,6 +16,24 @@ test("public package boundary guard passes current package and npm pack file lis
   assert.deepEqual(violations, []);
 });
 
+test("npm package keeps launch and marketing docs out of the runtime tarball", async () => {
+  const { spawnSync } = await import("node:child_process");
+  const result = spawnSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
+    cwd: rootDir,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+
+  const files = JSON.parse(result.stdout)[0].files.map((file) => file.path);
+  assert.ok(files.includes("docs/architecture.md"));
+  assert.ok(files.includes("docs/distribution-boundary.md"));
+  assert.ok(!files.includes("docs/launch-packet.md"));
+  assert.ok(!files.includes("docs/launch-assets.md"));
+  assert.ok(!files.includes("docs/ja-quickstart.md"));
+  assert.ok(!files.some((file) => file.startsWith("docs/assets/")));
+  assert.ok(!files.some((file) => file.startsWith("docs/i18n/")));
+});
+
 test("public package boundary guard rejects private runtime dependency specs", () => {
   const violations = findDependencyBoundaryViolations({
     manifest: {
