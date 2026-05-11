@@ -23,7 +23,7 @@ test("app-server bridge initializes with package version and handles request/clo
     await Promise.all([bridge.ensureStarted(), bridge.ensureStarted()]);
     const result = await bridge.request("echo", { ok: true });
     bridge.receiveStdout('{"method":"codex/event","params":{"type":"ready"}}\n');
-    bridge.close();
+    await bridge.close();
 
     const log = await fixture.readLog();
     assert.equal(log.filter((line) => line.startsWith("initialize:")).length, 1);
@@ -48,7 +48,7 @@ test("app-server bridge rejects request timeouts and close rejects pending reque
       timeoutMs: 25,
     });
     await assert.rejects(timeoutBridge.request("never"), /timed out waiting/);
-    timeoutBridge.close();
+    await timeoutBridge.close();
 
     const closeBridge = new CodexAppServerBridge({
       codexPath: fixture.codexPath,
@@ -58,8 +58,9 @@ test("app-server bridge rejects request timeouts and close rejects pending reque
     });
     await closeBridge.ensureStarted();
     const pending = closeBridge.sendRequest("never");
-    closeBridge.close();
+    const closed = closeBridge.close();
     await assert.rejects(pending, /bridge closed/);
+    await closed;
   } finally {
     await fixture.cleanup();
   }
@@ -81,17 +82,20 @@ test("app-server bridge keeps initialization stderr diagnostics bounded to the t
       timeoutMs: 200,
     });
 
-    await assert.rejects(
-      bridge.ensureStarted(),
-      (error) => {
-        assert.match(error.message, /failed to initialize codex app-server/);
-        assert.match(error.message, /latest-diagnostic/);
-        assert.doesNotMatch(error.message, /old-noise/);
-        assert.ok(Buffer.byteLength(error.message, "utf8") < 17_500);
-        return true;
-      },
-    );
-    bridge.close();
+    try {
+      await assert.rejects(
+        bridge.ensureStarted(),
+        (error) => {
+          assert.match(error.message, /failed to initialize codex app-server/);
+          assert.match(error.message, /latest-diagnostic/);
+          assert.doesNotMatch(error.message, /old-noise/);
+          assert.ok(Buffer.byteLength(error.message, "utf8") < 17_500);
+          return true;
+        },
+      );
+    } finally {
+      await bridge.close();
+    }
   } finally {
     await fixture.cleanup();
   }
@@ -127,9 +131,10 @@ rl.on("line", (line) => {
   if (message.method === "initialize") {
     log("initialize:" + JSON.stringify(message.params.clientInfo));
     if (process.env.MOCK_CODEX_FAIL_INIT === "1") {
-      process.stderr.write((process.env.MOCK_CODEX_STDERR_PREFIX || "") + "x".repeat(20_000));
-      process.stderr.write(process.env.MOCK_CODEX_STDERR_TAIL || "");
-      process.stdout.write(JSON.stringify({ id: message.id, error: { message: "init failed" } }) + "\\n");
+      process.stderr.write(
+        (process.env.MOCK_CODEX_STDERR_PREFIX || "") + "x".repeat(20_000) + (process.env.MOCK_CODEX_STDERR_TAIL || ""),
+        () => process.stdout.write(JSON.stringify({ id: message.id, error: { message: "init failed" } }) + "\\n"),
+      );
       return;
     }
     process.stdout.write(JSON.stringify({ id: message.id, result: { ok: true } }) + "\\n");

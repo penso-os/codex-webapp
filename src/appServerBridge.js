@@ -135,17 +135,23 @@ export class CodexAppServerBridge {
     }
   }
 
-  close() {
+  async close() {
     this.closed = true;
     for (const pending of this.pending.values()) {
       clearTimeout(pending.timer);
       pending.reject(new Error("Codex app-server bridge closed"));
     }
     this.pending.clear();
-    if (this.process && this.process.exitCode === null) {
-      this.process.kill();
-    }
+    const process = this.process;
     this.process = null;
+    if (process && process.exitCode === null) {
+      const closed = new Promise((resolve) => process.once("close", resolve));
+      process.stdin?.destroy();
+      process.stdout?.destroy();
+      process.stderr?.destroy();
+      process.kill();
+      await Promise.race([closed, delay(1_000)]);
+    }
   }
 }
 
@@ -158,4 +164,11 @@ function appendBoundedText(current, chunk, maxBytes) {
   const value = current + chunk;
   if (Buffer.byteLength(value, "utf8") <= maxBytes) return value;
   return Buffer.from(value, "utf8").subarray(-maxBytes).toString("utf8");
+}
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, ms);
+    timer.unref?.();
+  });
 }
