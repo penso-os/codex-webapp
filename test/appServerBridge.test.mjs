@@ -82,17 +82,20 @@ test("app-server bridge keeps initialization stderr diagnostics bounded to the t
       timeoutMs: 200,
     });
 
-    await assert.rejects(
-      bridge.ensureStarted(),
-      (error) => {
-        assert.match(error.message, /failed to initialize codex app-server/);
-        assert.match(error.message, /latest-diagnostic/);
-        assert.doesNotMatch(error.message, /old-noise/);
-        assert.ok(Buffer.byteLength(error.message, "utf8") < 17_500);
-        return true;
-      },
-    );
-    await bridge.close();
+    try {
+      await assert.rejects(
+        bridge.ensureStarted(),
+        (error) => {
+          assert.match(error.message, /failed to initialize codex app-server/);
+          assert.match(error.message, /latest-diagnostic/);
+          assert.doesNotMatch(error.message, /old-noise/);
+          assert.ok(Buffer.byteLength(error.message, "utf8") < 17_500);
+          return true;
+        },
+      );
+    } finally {
+      await bridge.close();
+    }
   } finally {
     await fixture.cleanup();
   }
@@ -128,9 +131,10 @@ rl.on("line", (line) => {
   if (message.method === "initialize") {
     log("initialize:" + JSON.stringify(message.params.clientInfo));
     if (process.env.MOCK_CODEX_FAIL_INIT === "1") {
-      process.stderr.write((process.env.MOCK_CODEX_STDERR_PREFIX || "") + "x".repeat(20_000));
-      process.stderr.write(process.env.MOCK_CODEX_STDERR_TAIL || "");
-      process.stdout.write(JSON.stringify({ id: message.id, error: { message: "init failed" } }) + "\\n");
+      process.stderr.write(
+        (process.env.MOCK_CODEX_STDERR_PREFIX || "") + "x".repeat(20_000) + (process.env.MOCK_CODEX_STDERR_TAIL || ""),
+        () => process.stdout.write(JSON.stringify({ id: message.id, error: { message: "init failed" } }) + "\\n"),
+      );
       return;
     }
     process.stdout.write(JSON.stringify({ id: message.id, result: { ok: true } }) + "\\n");
