@@ -14,7 +14,7 @@ Codex WebApp は、あなたの Mac に入っている Codex App をローカル
 
 この project は非公式であり、OpenAI と提携・承認・推薦されたものではありません。冒頭の local-first な説明は設計上の境界であり、絶対的な安全性の保証ではありません。安全確認、起動前チェック、smoke 証跡を添えて、ローカルで使うことを前提にしています。
 
-launch 用の social preview と capture storyboard は [Launch Assets](./docs/launch-assets.md) にあります。
+launch 用の social preview と capture storyboard は [Launch Assets](./docs/launch-assets.md) にあります。公開投稿文、setup showcase、support triage のメモは [Launch Packet](./docs/launch-packet.md) にあります。
 
 ## Codex App から始める
 
@@ -193,7 +193,7 @@ screenshot を共有する前に必ず確認してください。token、cookie�
 
 ## Support
 
-issue には OS、shell、Node version、Codex version、実行した command、redact 済みの `doctor` / `start` / `smoke` output を入れてください。token、cookie、private repository contents、customer data、internal URL は public issue に貼らないでください。
+issue には OS、shell、Node version、Codex version、実行した command、redact 済みの `doctor` / `start` / `smoke` output を入れてください。token、cookie、private repository contents、customer data、internal URL は public issue に貼らないでください。起動できた setup を共有する場合は、"Show your setup" issue template を使い、[Launch Packet](./docs/launch-packet.md) の redaction guidance に従ってください。
 
 [SECURITY.md](./SECURITY.md)、[SUPPORT.md](./SUPPORT.md)、Codex App user flow の [Codex App Install UX Guide](./docs/codex-app-install.md) も参照してください。
 

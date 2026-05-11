@@ -14,7 +14,7 @@ Codex WebApp starts a local browser surface for the Codex App already installed 
 
 This project is unofficial and is not affiliated with or endorsed by OpenAI. The local-first description above is a design boundary, not an absolute security guarantee. This package provides safety rails, clear checks, and repeatable smoke evidence.
 
-Launch social previews and capture storyboards are in [Launch Assets](./docs/launch-assets.md).
+Launch social previews and capture storyboards are in [Launch Assets](./docs/launch-assets.md). Public launch copy, setup-showcase guidance, and support triage notes are in the [Launch Packet](./docs/launch-packet.md).
 
 ## Quick Start From Codex App
 
@@ -193,7 +193,7 @@ Deleting `~/.cache/codex-webapp/` is safe; the adapter will prepare the renderer
 
 ## Support
 
-Open an issue with your OS, shell, Node version, Codex version, the command you ran, and redacted output from `doctor`, `start`, or `smoke`. Do not paste tokens, cookies, private repository contents, customer data, or internal URLs into a public issue.
+Open an issue with your OS, shell, Node version, Codex version, the command you ran, and redacted output from `doctor`, `start`, or `smoke`. Do not paste tokens, cookies, private repository contents, customer data, or internal URLs into a public issue. If the setup worked and you want to share it, use the "Show your setup" issue template and follow the redaction guidance in the [Launch Packet](./docs/launch-packet.md).
 
 See [SECURITY.md](./SECURITY.md), [SUPPORT.md](./SUPPORT.md), and the Codex App user flow in [Codex App Install UX Guide](./docs/codex-app-install.md).
 
