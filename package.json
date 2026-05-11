@@ -39,7 +39,8 @@
   },
   "files": [
     "bin",
-    "docs",
+    "docs/architecture.md",
+    "docs/distribution-boundary.md",
     "scripts",
     "src",
     "ACKNOWLEDGEMENTS.md",
