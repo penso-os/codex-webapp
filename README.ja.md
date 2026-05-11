@@ -8,11 +8,13 @@
 
 **Codex の作業を、スマホで見守れる。プロジェクトはあなたのPCに置いたまま。**
 
+![Codex WebApp README hero](./docs/assets/codex-webapp-readme-hero.svg)
+
 Codex WebApp は、あなたの Mac に入っている Codex App をローカルのブラウザ画面として開くための companion package です。Codex に作業を任せている間、別の画面から様子を見たい。そのときもプロジェクト、secret、作業中のファイルは、作業しているPCに置いたままにしたい。そういう場面のための小さな道具です。Codex App と Codex CLI は別途インストール済みである必要があります。
 
 この project は非公式であり、OpenAI と提携・承認・推薦されたものではありません。冒頭の local-first な説明は設計上の境界であり、絶対的な安全性の保証ではありません。安全確認、起動前チェック、smoke 証跡を添えて、ローカルで使うことを前提にしています。
 
-![Codex WebApp の流れ](./docs/assets/codex-webapp-overview.svg)
+launch 用の social preview と capture storyboard は [Launch Assets](./docs/launch-assets.md) にあります。
 
 ## Codex App から始める
 
@@ -85,6 +87,8 @@ npx -y codex-webapp smoke \
 3. デフォルトでは `http://127.0.0.1:8214/` でローカル配信します。
 4. ブラウザから同じPC上の Codex app server と通信できるようにします。
 5. `Ctrl+C`、terminal window の終了、接続が切れるほどの sleep、PC再起動で止まります。
+
+![Codex WebApp の流れ](./docs/assets/codex-webapp-overview.svg)
 
 この package は hosted account を作りません。workspace の cloud copy も作りません。スマホから見られる状態を単独で作るものでもありません。スマホから使う場合は、先に Tailscale や Cloudflare Access などの信頼できるアクセス境界を置いてください。
 

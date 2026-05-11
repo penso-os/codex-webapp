@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Codex WebApp Japanese social preview</title>
+  <desc id="desc">Codex WebApp の日本語ソーシャルプレビュー。ローカルPC、ブラウザ画面、信頼できるアクセス境界を示す。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#101211"/>
+      <stop offset="56%" stop-color="#17201b"/>
+      <stop offset="100%" stop-color="#27372e"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#202422"/>
+      <stop offset="100%" stop-color="#0f1110"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000000" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1068" cy="112" r="112" fill="#41594b" opacity="0.24"/>
+  <circle cx="160" cy="560" r="160" fill="#c7d8bd" opacity="0.10"/>
+  <g transform="translate(72 84)">
+    <text x="0" y="54" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="28" font-weight="700" fill="#8fd6aa">LOCAL-FIRST COMPANION UI</text>
+    <text x="0" y="138" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="70" font-weight="850" fill="#ffffff">Codex WebApp</text>
+    <text x="0" y="194" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="30" font-weight="500" fill="#d8ddd8">Codex の作業をスマホで見守る。</text>
+    <text x="0" y="236" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="30" font-weight="500" fill="#d8ddd8">プロジェクトはあなたのPCに置いたまま。</text>
+    <rect x="0" y="300" width="524" height="64" rx="32" fill="#f4f2ea"/>
+    <text x="32" y="341" font-family="SFMono-Regular, Consolas, monospace" font-size="24" font-weight="700" fill="#18201b">npx -y codex-webapp start</text>
+    <text x="0" y="426" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="21" fill="#b9c4bc">非公式 project。OpenAI との提携、承認、推薦はありません。</text>
+    <text x="0" y="462" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="21" fill="#b9c4bc">source asset は Apache-2.0 license で提供されます。</text>
+  </g>
+  <g transform="translate(704 104)" filter="url(#shadow)">
+    <rect width="456" height="318" rx="28" fill="#f6f4ef"/>
+    <rect x="28" y="28" width="400" height="230" rx="20" fill="url(#screen)"/>
+    <rect x="58" y="58" width="340" height="18" rx="9" fill="#3b403d"/>
+    <text x="74" y="132" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="34" font-weight="800" fill="#f4f4f4">What should</text>
+    <text x="74" y="178" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="34" font-weight="800" fill="#f4f4f4">we build?</text>
+    <rect x="74" y="212" width="252" height="18" rx="9" fill="#3e8b68"/>
+    <rect x="52" y="282" width="352" height="12" rx="6" fill="#d3cec2"/>
+  </g>
+  <g transform="translate(1030 266)" filter="url(#shadow)">
+    <rect width="160" height="284" rx="34" fill="#f8f7f2"/>
+    <rect x="15" y="18" width="130" height="248" rx="24" fill="#141615"/>
+    <rect x="42" y="42" width="76" height="8" rx="4" fill="#3c403e"/>
+    <text x="32" y="116" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="20" font-weight="800" fill="#f4f4f4">Local</text>
+    <text x="32" y="146" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="20" font-weight="800" fill="#f4f4f4">browser</text>
+    <rect x="32" y="184" width="96" height="38" rx="19" fill="#2f7a5b"/>
+  </g>
+  <path d="M932 474 C898 518 810 522 758 484" fill="none" stroke="#8fd6aa" stroke-width="10" stroke-linecap="round"/>
+  <path d="M770 470 L746 485 L773 500" fill="none" stroke="#8fd6aa" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="676" y="516" width="340" height="52" rx="26" fill="#2f7a5b"/>
+  <text x="708" y="550" font-family="Inter, Arial, 'Noto Sans JP', sans-serif" font-size="21" font-weight="800" fill="#ffffff">信頼できるアクセス境界</text>
+</svg>
