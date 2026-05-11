@@ -8,11 +8,13 @@
 
 **Watch Codex work from your phone. Keep your project on your computer.**
 
+![Codex WebApp README hero](./docs/assets/codex-webapp-readme-hero.svg)
+
 Codex WebApp starts a local browser surface for the Codex App already installed on your Mac. It is meant for the everyday moment where Codex is running a task and you want to check in from another screen while your project, secrets, and working files stay on the computer doing the work. Codex App and Codex CLI must already be installed.
 
 This project is unofficial and is not affiliated with or endorsed by OpenAI. The local-first description above is a design boundary, not an absolute security guarantee. This package provides safety rails, clear checks, and repeatable smoke evidence.
 
-![Codex WebApp flow](./docs/assets/codex-webapp-overview.svg)
+Launch social previews and capture storyboards are in [Launch Assets](./docs/launch-assets.md).
 
 ## Quick Start From Codex App
 
@@ -85,6 +87,8 @@ At a high level:
 3. It serves that UI on a local address, by default `http://127.0.0.1:8214/`.
 4. It lets the browser talk to the local Codex app server on the same machine.
 5. It stops when you press `Ctrl+C`, close the terminal, sleep the machine long enough to break the connection, or restart the computer.
+
+![Codex WebApp flow](./docs/assets/codex-webapp-overview.svg)
 
 The package does not create a hosted account, does not keep a cloud copy of your workspace, and does not make the page available to your phone by itself. For phone access, put a trusted access boundary such as Tailscale or Cloudflare Access in front of your computer first.
 
