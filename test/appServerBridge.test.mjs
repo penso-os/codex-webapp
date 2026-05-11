@@ -23,7 +23,7 @@ test("app-server bridge initializes with package version and handles request/clo
     await Promise.all([bridge.ensureStarted(), bridge.ensureStarted()]);
     const result = await bridge.request("echo", { ok: true });
     bridge.receiveStdout('{"method":"codex/event","params":{"type":"ready"}}\n');
-    bridge.close();
+    await bridge.close();
 
     const log = await fixture.readLog();
     assert.equal(log.filter((line) => line.startsWith("initialize:")).length, 1);
@@ -48,7 +48,7 @@ test("app-server bridge rejects request timeouts and close rejects pending reque
       timeoutMs: 25,
     });
     await assert.rejects(timeoutBridge.request("never"), /timed out waiting/);
-    timeoutBridge.close();
+    await timeoutBridge.close();
 
     const closeBridge = new CodexAppServerBridge({
       codexPath: fixture.codexPath,
@@ -58,8 +58,9 @@ test("app-server bridge rejects request timeouts and close rejects pending reque
     });
     await closeBridge.ensureStarted();
     const pending = closeBridge.sendRequest("never");
-    closeBridge.close();
+    const closed = closeBridge.close();
     await assert.rejects(pending, /bridge closed/);
+    await closed;
   } finally {
     await fixture.cleanup();
   }
@@ -91,7 +92,7 @@ test("app-server bridge keeps initialization stderr diagnostics bounded to the t
         return true;
       },
     );
-    bridge.close();
+    await bridge.close();
   } finally {
     await fixture.cleanup();
   }
