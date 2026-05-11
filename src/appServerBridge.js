@@ -1,23 +1,28 @@
 import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 
 import { parseAppServerMessage, serializeAppServerMessage } from "./appServerMessageCodec.js";
 
 const REQUEST_TIMEOUT_MS = 30_000;
+const STDERR_BUFFER_BYTES = 16_384;
+const PACKAGE_JSON = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const CLIENT_INFO = {
   name: "codex-webapp",
   title: "Codex WebApp",
-  version: "0.1.8",
+  version: PACKAGE_JSON.version,
 };
 
 export class CodexAppServerBridge {
   constructor({
     codexPath = "codex",
+    codexArgs = ["app-server", "--listen", "stdio://"],
     cwd = process.cwd(),
     env = process.env,
     timeoutMs = REQUEST_TIMEOUT_MS,
     onNotification = null,
   } = {}) {
     this.codexPath = codexPath || "codex";
+    this.codexArgs = codexArgs;
     this.cwd = cwd || process.cwd();
     this.env = env;
     this.timeoutMs = timeoutMs;
@@ -43,7 +48,7 @@ export class CodexAppServerBridge {
 
   async start() {
     if (this.closed) throw new Error("Codex app-server bridge is closed");
-    this.process = spawn(this.codexPath, ["app-server", "--listen", "stdio://"], {
+    this.process = spawn(this.codexPath, this.codexArgs, {
       cwd: this.cwd,
       env: this.env,
       stdio: ["pipe", "pipe", "pipe"],
@@ -60,10 +65,9 @@ export class CodexAppServerBridge {
       this.startPromise = null;
     });
 
-    const stderr = [];
+    let stderr = "";
     this.process.stderr.on("data", (chunk) => {
-      stderr.push(String(chunk));
-      if (stderr.join("").length > 16_384) stderr.shift();
+      stderr = appendBoundedText(stderr, String(chunk), STDERR_BUFFER_BYTES);
     });
 
     try {
@@ -73,7 +77,8 @@ export class CodexAppServerBridge {
       });
       this.sendNotification("initialized", {});
     } catch (error) {
-      throw new Error(`failed to initialize codex app-server: ${error.message}; ${stderr.join("").trim()}`);
+      const stderrSuffix = stderr.trim();
+      throw new Error(`failed to initialize codex app-server: ${error.message}; ${stderrSuffix}`);
     }
   }
 
@@ -147,4 +152,10 @@ export class CodexAppServerBridge {
 function errorMessage(error) {
   if (!error || typeof error !== "object") return String(error);
   return error.message || JSON.stringify(error);
+}
+
+function appendBoundedText(current, chunk, maxBytes) {
+  const value = current + chunk;
+  if (Buffer.byteLength(value, "utf8") <= maxBytes) return value;
+  return Buffer.from(value, "utf8").subarray(-maxBytes).toString("utf8");
 }
